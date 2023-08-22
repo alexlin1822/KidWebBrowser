@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { GetAccountID, SetCurrentID, GetCurrentID } from "./utility/Common";
 import { router } from "expo-router";
 
-export default function Page() {
+export default function Login() {
   const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
 

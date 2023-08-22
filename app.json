@@ -8,6 +8,17 @@
       "expo-router"
     ],
     "name": "KidWebBrowser",
-    "slug": "KidWebBrowser"
+    "slug": "KidWebBrowser",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b91e20bc-9aa8-483c-b56e-eb16e350a2ee"
+      }
+    },
+    "android": {
+      "package": "com.alexlam1822.KidWebBrowser"
+    }
   }
 }
