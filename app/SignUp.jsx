@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Button,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { router } from "expo-router";
 
 import {
@@ -131,11 +124,6 @@ export default function Signup() {
 
       <Button title="Sign Up" onPress={() => handleSignup("Sign Up")} />
       <Button title="Cancel" onPress={() => handleSignup("Cancel")} />
-      {/* <Link href="/Login" asChild>
-        <Pressable>
-          <Text>Home</Text>
-        </Pressable>
-      </Link> */}
     </View>
   );
 }

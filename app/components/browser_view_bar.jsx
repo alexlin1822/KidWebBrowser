@@ -13,62 +13,7 @@ import {
   FontAwesome5,
 } from "@expo/vector-icons";
 
-export default function BrowserViewBar({
-  resourceList,
-  timeLeft,
-  onGoBack,
-  onGoForward,
-  onReload,
-  onExit,
-  onClick,
-}) {
-  // const [rid, setRid] = useState(resourceList.rid);
-  // const [defaultUrl, setDefaultUrl] = useState(resourceList.default_url);
-  // const [urlInclude, setUrlInclude] = useState(resourceList.url_include);
-  // const [titleInclude, setTitleInclude] = useState(resourceList.title_include);
-  // const [whiteList, setWhiteList] = useState(resourceList.whitelist);
-
-  // const [useUrlInclude, setUseUseUrlInclude] = useState(true);
-  // const [userTitleInclude, setUseTitleInclude] = useState(false);
-  // const [useWhiteList, setUseWhiteList] = useState(false);
-
-  // const currentAccountID = GetCurrentID("currentAccountID");
-  // const focusMemberID = GetCurrentID("focusMemberID");
-  // const currentResourceID = GetCurrentID("currentResourceID");
-  // rid: "0",
-  // title: "Add resource",
-  // description: "Add resource",
-  // default_url: "https://www.google.com/",
-  // icon: "https://www.google.com/favicon.ico",
-  // memo: "",
-  // status: "0",
-  // url_include: "",
-  // title_include: "",
-  // whitelist: "",
-  // use_url_include: true,
-  // use_title_include: false,
-  // use_whitelist: false,
-  // lastURL: "https://www.google.com/",
-
-  const handleGoBack = () => {
-    onGoBack();
-  };
-  const handleGoForward = () => {
-    onGoForward();
-  };
-
-  const handleReload = () => {
-    onReload();
-  };
-
-  const handleExit = () => {
-    onExit();
-  };
-
-  const handleHide = () => {
-    onExit();
-  };
-
+export default function BrowserViewBar({ resourceList, timeLeft, onClick }) {
   const handleClicked = (type) => {
     onClick(type);
   };
@@ -116,7 +61,7 @@ export default function BrowserViewBar({
 
       <Text
         style={
-          (styles.text, { marginLeft: 30, fontSize: 30, fontWeight: "bold" })
+          (styles.text, { marginLeft: 20, fontSize: 22, fontWeight: "bold" })
         }
       >
         {resourceList.title}

@@ -20,10 +20,6 @@ export default function Browser() {
   const { passItem, whatMode } = params;
   let item = JSON.parse(passItem);
   let isEditMode = whatMode === "true" ? true : false;
-  console.log("WhatMode in browser: " + whatMode);
-
-  console.log("Browser - item here: " + passItem);
-  console.log(isEditMode);
 
   const [url, setUrl] = useState(item.last_url);
   const [webTitle, setWebTitle] = useState("");
@@ -66,10 +62,7 @@ export default function Browser() {
     timesUp();
   }
 
-  console.log("timeLeft " + timeLeft.toString());
-
-  console.log("currentResourceID - Browser: " + currentResourceID);
-  console.log("item.last_url: " + url + "   " + item.last_url);
+  console.log("Browser - currentResourceID : " + currentResourceID);
 
   /**
    * @description browser_edit_bar submit the new resource profile to here
@@ -89,7 +82,8 @@ export default function Browser() {
 
     // Clicked submit button
     // Save resource profile to local storage
-    console.log("newResourceProfile", newResourceProfile);
+    console.log("Browser handleEditSubmit: NewResourceList: ");
+    console.log(newResourceProfile);
 
     let value = await LoadData_local(
       GetStorageKey(currentAccountID, focusMemberID)
@@ -99,16 +93,14 @@ export default function Browser() {
       let tmpMemberProfile = JSON.parse(value);
 
       let keyToUpdate = newResourceProfile.rid;
-
       const updatedData = tmpMemberProfile.resourcelist.map((item) => {
         if (item.rid === keyToUpdate) {
-          console.log("item_KKKK", item);
           // Update the desired key's value here
           return {
             ...item,
-            // rid: "0",
-            // title: "Add resource",
-            // description: "Add resource",
+            // rid:   //rid is not changed
+            title: newResourceProfile.title,
+            description: newResourceProfile.description,
             default_url: newResourceProfile.default_url,
             icon: newResourceProfile.icon,
             memo: newResourceProfile.memo,
@@ -120,6 +112,7 @@ export default function Browser() {
             use_title_include: newResourceProfile.use_title_include,
             use_whitelist: newResourceProfile.use_whitelist,
             last_url: newResourceProfile.default_url,
+            time_limit: newResourceProfile.time_limit,
           };
         }
         return item;
@@ -132,7 +125,10 @@ export default function Browser() {
         tmpMemberProfile.resourcelist = updatedData;
       }
       value = JSON.stringify(tmpMemberProfile);
-      console.log("value_KK", value);
+
+      console.log("Browser handleEditSubmit: [value] to save ");
+      console.log(value);
+
       await SaveData_local(
         GetStorageKey(currentAccountID, focusMemberID),
         value
@@ -140,6 +136,7 @@ export default function Browser() {
     }
 
     SetCurrentID("currentResourceID", "");
+
     router.push({
       pathname: "/Home",
       params: { needLoad: true },
@@ -164,6 +161,8 @@ export default function Browser() {
     } else if (type === "Reload") {
       webViewRef.current.reload();
     } else if (type === "Exit") {
+      updateLastURL(focusMemberID, url);
+      SetCurrentID("currentResourceID", "");
       router.push({
         pathname: "/Home",
         params: { needLoad: false },
@@ -171,6 +170,61 @@ export default function Browser() {
     } else if (type === "Hide") {
       setIsShowViewMenu(false);
     }
+  };
+
+  const updateLastURL = async (myfocusMemberID, newURL) => {
+    console.log("Browser - updateLastURL: " + myfocusMemberID + "  " + newURL);
+    let value = await LoadData_local(
+      GetStorageKey(currentAccountID, myfocusMemberID)
+    );
+
+    if (value !== "") {
+      let tmpMemberProfile = JSON.parse(value);
+
+      let keyToUpdate = currentResourceID;
+      const updatedData = tmpMemberProfile.resourcelist.map((item) => {
+        if (item.rid === keyToUpdate) {
+          // Update the desired key's value here
+          return {
+            ...item,
+            // rid:   //rid is not changed
+            last_url: newURL,
+          };
+        }
+        return item;
+      });
+
+      tmpMemberProfile.resourcelist = updatedData;
+      value = JSON.stringify(tmpMemberProfile);
+
+      console.log("Browser updateLastURL: [value] to save ");
+      console.log(value);
+
+      await SaveData_local(
+        GetStorageKey(currentAccountID, myfocusMemberID),
+        value
+      );
+    }
+  };
+
+  const handleUrlChange = (newNavState) => {
+    const { url, title } = newNavState;
+    if (isEditMode) {
+      setUrl(url);
+      setWebTitle(title);
+    } else {
+      if (!checkWeb(url, title)) {
+        setUrl(item.default_url);
+        webViewRef.current.goBack();
+      } else {
+        setUrl(url);
+        setWebTitle(title);
+      }
+    }
+  };
+
+  const clickHandler = () => {
+    setIsShowViewMenu(!isShowViewMenu);
   };
 
   const checkWeb = (currentUrl, currentTitle) => {
@@ -207,27 +261,6 @@ export default function Browser() {
     return false;
   };
 
-  const handleUrlChange = (newNavState) => {
-    const { url, title } = newNavState;
-    if (isEditMode) {
-      setUrl(url);
-      setWebTitle(title);
-    } else {
-      console.log("--------------------");
-      if (!checkWeb(url, title)) {
-        console.log("checkWeb false");
-        console.log(item.default_url);
-        setUrl(item.default_url);
-        console.log(url);
-        webViewRef.current.goBack();
-      }
-    }
-  };
-
-  const clickHandler = () => {
-    setIsShowViewMenu(!isShowViewMenu);
-  };
-
   return (
     <View style={styles.container}>
       {isEditMode ? (
@@ -240,7 +273,7 @@ export default function Browser() {
             onReload={() => handleMenuClicked("Reload")}
           />
           <BrowserEditBar
-            onSubmit={handleEditSubmit}
+            onEditBarSubmit={handleEditSubmit}
             resourceList={resourceProfile}
             updateURL={url}
             updateTitle={webTitle}
@@ -255,7 +288,6 @@ export default function Browser() {
           />
         )
       )}
-
       <WebView
         ref={webViewRef}
         style={styles.webview}
@@ -267,12 +299,13 @@ export default function Browser() {
       />
       {/* <StatusBar style="auto" /> */}
 
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={clickHandler}
-        style={styles.touchableOpacityStyle}
-      >
-        {/* <Image
+      {!isEditMode && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={clickHandler}
+          style={styles.touchableOpacityStyle}
+        >
+          {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
           source={{
@@ -284,12 +317,13 @@ export default function Browser() {
         />
          */}
 
-        <MaterialCommunityIcons
-          name="microsoft-xbox-controller-menu"
-          size={50}
-          color="orange"
-        />
-      </TouchableOpacity>
+          <MaterialCommunityIcons
+            name="microsoft-xbox-controller-menu"
+            size={50}
+            color="orange"
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

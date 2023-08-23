@@ -1,6 +1,6 @@
-# Kid Web Browser for Android Pad 😄
+# Kid Web Browser for Android Pad and iPad 😄
 
-Platform: Android && IOS
+Platform: Android & IOS
 
 Languages: JavaScript
 

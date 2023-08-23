@@ -33,13 +33,14 @@ export function getTimeLeft() {
  * @returns : Boolean
  */
 export async function SaveData_local(keyname, content) {
-  console.log(`Saveing data....`);
+  console.log(`Common - SaveData_local : ` + keyname + "  Content: " + content);
   // Save the user data in Storage
   try {
     // return await SecureStore.setItemAsync(keyname, content);
     return await SecureStore.setItemAsync(keyname, content);
   } catch (error) {
     // Error saving data
+    console.log("Common - SaveData_local Error:");
     console.log(error);
     return false;
   }
@@ -52,10 +53,10 @@ export async function SaveData_local(keyname, content) {
 export async function LoadData_local(keyname) {
   // Load current account numbers and list in Storage
   try {
-    console.log("Loading Data.....");
-
     // const value = await SecureStore.getItemAsync(keyname);
     const value = await SecureStore.getItemAsync(keyname);
+
+    console.log(`Common - LoadData_local : ` + keyname + "  Content: " + value);
 
     if (value !== null) {
       return value;
@@ -63,6 +64,7 @@ export async function LoadData_local(keyname) {
       return "";
     }
   } catch (error) {
+    console.log("Common - LoadData_local Error:");
     console.log(error);
     return "";
   }
@@ -76,18 +78,20 @@ export async function LoadData_local(keyname) {
  * @returns : string
  */
 export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
+  let result = "";
   if (accountID === "" && memberID === "" && resourceID === "") {
     //In the remote version, the account list is stored in the server
-    return appName + "." + "accountList"; // Acount List storage Key (just for local version)
+    result = appName + "." + "accountList"; // Acount List storage Key (just for local version)
   } else if (accountID != "" && memberID === "" && resourceID === "") {
-    return appName + "." + accountID; // Account storage data Key
+    result = appName + "." + accountID; // Account storage data Key
   } else if (accountID != "" && memberID != "" && resourceID === "") {
-    return appName + "." + accountID + "-" + memberID; // Member data
+    result = appName + "." + accountID + "-" + memberID; // Member data
   } else if (accountID != "" && memberID != "" && resourceID != "") {
-    return appName + "." + accountID + "-" + memberID + "-" + resourceID; // Resource data
-  } else {
-    return "";
+    result = appName + "." + accountID + "-" + memberID + "-" + resourceID; // Resource data
   }
+
+  console.log(`Common - GetStorageKey : ${result}`);
+  return result;
 }
 
 /**
@@ -97,6 +101,7 @@ export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
  * @returns
  */
 export async function CheckUsernameisExist(username, email) {
+  console.log(`Common - CheckUsernameisExist `);
   //get account list
   let accountList = await LoadData_local(GetStorageKey());
 
@@ -140,6 +145,8 @@ export async function GetAccountID(username, password) {
       break;
     }
   }
+
+  console.log(`Common - GetAccountID : ${accountID}`);
   return accountID;
 }
 
@@ -149,16 +156,19 @@ export async function GetAccountID(username, password) {
  * @returns {string} random string
  */
 export function GenerateNewId(idType) {
+  let result = "";
   const UUID = Crypto.randomUUID();
+
   if (idType === "account") {
-    return "a-" + UUID;
+    result = "a-" + UUID;
   } else if (idType === "member") {
-    return "m-" + UUID;
+    result = "m-" + UUID;
   } else if (idType === "resource") {
-    return "r-" + UUID;
-  } else {
-    return "";
+    result = "r-" + UUID;
   }
+
+  console.log(`Common - GenerateNewId : ${result}`);
+  return result;
 }
 
 /**
@@ -167,15 +177,15 @@ export function GenerateNewId(idType) {
  * @returns : String
  */
 export function GetCurrentID(keyname) {
-  console.log("GetInfo: " + keyname);
+  console.log("Common - GetInfo: " + keyname);
   if (keyname === "currentAccountID") {
-    console.log("currentAccountID: " + currentAccountID);
+    console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
     return currentAccountID;
   } else if (keyname === "focusMemberID") {
-    console.log("focusMemberID: " + focusMemberID);
+    console.log("Common - GetInfo: focusMemberID: " + focusMemberID);
     return focusMemberID;
   } else if (keyname === "currentResourceID") {
-    console.log("currentResourceID: " + currentResourceID);
+    console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
     return currentResourceID;
   } else {
     return "";
@@ -188,7 +198,7 @@ export function GetCurrentID(keyname) {
  * @returns : Boolean
  * */
 export function SetCurrentID(keyname, content) {
-  console.log("SetInfo: " + keyname + " " + content);
+  console.log("Common - SetInfo: " + keyname + " " + content);
   if (keyname === "currentAccountID") {
     currentAccountID = content;
   } else if (keyname === "focusMemberID") {
@@ -208,7 +218,7 @@ export function SetCurrentID(keyname, content) {
  */
 async function LoadCurrentData(currentID) {
   try {
-    console.log("LoadCurrentData");
+    console.log("Common - LoadCurrentData");
 
     currentAccountID = currentID;
     currentUserProfileSetting = await SecureStore.getItemAsync(
@@ -229,6 +239,7 @@ async function LoadCurrentData(currentID) {
     currentAccountID = "";
     currentUserProfileSetting = "";
     currentUserData = "";
+    console.log("Common - LoadCurrentData Error:");
     console.log(error);
     return false;
   }

@@ -6,6 +6,7 @@ export default function PeopleCard({
   onSubmitLongResource,
 }) {
   const strIcon = item.icon.toString();
+  let isDefaultIcon = item.key === "0" ? true : false;
 
   console.log("People card here" + JSON.stringify(item));
 
@@ -25,14 +26,12 @@ export default function PeopleCard({
         onPress={handleClick}
         onLongPress={handleLongClick}
       >
-        {strIcon.startsWith("http") ? (
+        {/* {isDefaultIcon ? (
           <Image source={{ uri: item.icon }} style={styles.image} />
         ) : (
-          <Image
-            source={require("../assets/favicon.png")}
-            style={styles.image}
-          />
-        )}
+          <Image source={{ uri: item.icon }} style={styles.image} />
+        )} */}
+        <Image source={{ uri: item.icon }} style={styles.image} />
         <Text style={styles.text}>{item.title}</Text>
         <Text style={{ color: "blue" }}>{item.description}</Text>
       </TouchableOpacity>
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
   image: {
     width: 128,
     height: 128,
+    resizeMode: "stretch",
   },
   text: {
     fontWeight: "bold",

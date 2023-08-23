@@ -11,11 +11,11 @@ import { GenerateNewId } from "../utility/Common";
 
 export default function BrowserEditBar({
   resourceList,
-  onSubmit,
+  onEditBarSubmit,
   updateURL,
   updateTitle,
 }) {
-  console.log("BrowserEditBar", resourceList);
+  console.log("BrowserEditBar - resourceList : ", resourceList);
 
   // rid: "0",              no
   // title: "Add resource",
@@ -62,7 +62,6 @@ export default function BrowserEditBar({
   const [iconUrl, setIconUrl] = useState("");
 
   const handleSetValue = (type) => {
-    console.log("handleSetValue", type);
     if (type === "url_include") {
       let tmp = urlInclude;
       if (tmp.length > 0) {
@@ -101,7 +100,7 @@ export default function BrowserEditBar({
 
   //* Save Setting function
   const handleSubmit = () => {
-    console.log("handleSubmit" + resourceList);
+    console.log("browser_edit_bar handleSubmit: resourceList - ");
     console.log(resourceList);
 
     let newResourceList = {
@@ -122,10 +121,10 @@ export default function BrowserEditBar({
       last_url: defaultUrl,
       time_limit: timeLimit,
     };
-    console.log("NewSubmit" + newResourceList);
+    console.log("browser_edit_bar handleSubmit: NewResourceList - ");
     console.log(newResourceList);
 
-    onSubmit(newResourceList);
+    onEditBarSubmit(newResourceList);
   };
 
   const getIcon = (url) => {
@@ -135,7 +134,7 @@ export default function BrowserEditBar({
   };
 
   const handleCancel = () => {
-    onSubmit(null);
+    onEditBarSubmit(null);
   };
 
   const handleSetDefalut = () => {
