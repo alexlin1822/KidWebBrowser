@@ -22,7 +22,6 @@ import PeopleCard from "./components/people_card";
 export default function UserProfile() {
   const params = useLocalSearchParams();
   const { needLoad } = params;
-  console.log("UserProfile needLoad: " + needLoad);
 
   const [isLoading, setIsLoading] = useState(needLoad);
   const [myAccountProfile, setMyAccountProfile] = useState({});
@@ -31,11 +30,11 @@ export default function UserProfile() {
 
   // PeopleCard click event
   const clickPeopleCard = (item, isLongPress) => {
-    console.log("clickPeopleCard - UserProfile " + item.mid);
+    console.log("UserProfile - clickPeopleCard: ");
     console.log(item);
     console.log(isLongPress);
-    const resultID = item.key;
-    SetCurrentID("focusMemberID", resultID);
+
+    SetCurrentID("focusMemberID", item.key);
 
     if (isLongPress || item.key === "0") {
       router.push({
@@ -74,7 +73,7 @@ export default function UserProfile() {
         }
         setMyAccountProfile(tmpAccountProfile);
         console.log(
-          "UserProfile Fetch Data: " + JSON.stringify(tmpAccountProfile)
+          "UserProfile  - fetchData(): " + JSON.stringify(tmpAccountProfile)
         );
       } catch (e) {
         console.warn(e);
