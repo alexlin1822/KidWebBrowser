@@ -122,8 +122,16 @@ export default function Signup() {
         secureTextEntry={true}
       />
 
-      <Button title="Sign Up" onPress={() => handleSignup("Sign Up")} />
-      <Button title="Cancel" onPress={() => handleSignup("Cancel")} />
+      <Button
+        style={styles.submitButton}
+        title="Sign Up"
+        onPress={() => handleSignup("Sign Up")}
+      />
+      <Button
+        style={styles.submitButton}
+        title="Cancel"
+        onPress={() => handleSignup("Cancel")}
+      />
     </View>
   );
 }
@@ -133,5 +141,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 24,
+  },
+  submitButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 100,
+    paddingHorizontal: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
+    height: 50,
+    flex: 0.5,
   },
 });

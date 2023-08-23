@@ -208,7 +208,8 @@ export default function Browser() {
   };
 
   const handleUrlChange = (newNavState) => {
-    const { url, title } = newNavState;
+    const { url, title, favicon } = newNavState;
+    console.log("Browser - handleUrlChange: favicon: " + favicon);
     if (isEditMode) {
       setUrl(url);
       setWebTitle(title);
@@ -316,9 +317,8 @@ export default function Browser() {
           style={styles.floatingButtonStyle}
         />
          */}
-
           <MaterialCommunityIcons
-            name="microsoft-xbox-controller-menu"
+            name="arrow-top-left-bold-box"
             size={50}
             color="orange"
           />
@@ -349,12 +349,12 @@ const styles = StyleSheet.create({
     // left: 10,
     // top: 90,
     right: 30,
-    bottom: 30,
+    bottom: 10,
   },
   floatingButtonStyle: {
     resizeMode: "contain",
     width: 50,
     height: 50,
-    // backgroundColor: "black",
+    backgroundColor: "black",
   },
 });
