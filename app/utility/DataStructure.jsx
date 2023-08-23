@@ -3,8 +3,6 @@
  *               account profile, and resource profile.
  *
  */
-import { GenerateNewId } from "./Common";
-
 // #### Account List object ####
 export function InitNewAccountList_local(
   accountID,
@@ -58,16 +56,8 @@ export function InitAccountProfile(accountID) {
         key: "0",
         title: "Add Person",
         description: "Add your kid or family member",
-        icon: "../assets/icon.png",
+        icon: "https://alexlin1822.github.io/aimage/0.png",
         memo: "",
-        status: "0",
-      },
-      {
-        key: GenerateNewId("member"),
-        title: "Ken",
-        description: "Boy",
-        icon: "https://www.google.com/favicon.ico",
-        memo: "Son",
         status: "0",
       },
       // {...}
@@ -77,6 +67,7 @@ export function InitAccountProfile(accountID) {
 }
 
 // #### Resource profile object ####
+
 export function InitResourceProfile(memberID) {
   console.log("InitResourceProfile");
   const myResourceProfile = {

@@ -1,59 +1,55 @@
-import { useState } from "react";
-import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { GetAccountID, SetCurrentID, GetCurrentID } from "./utility/Common";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 
 export default function Page() {
-  const [userName, setuserName] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async () => {
-    // Simulating a login check (you should replace this with your actual authentication logic)
-    let resultID = await GetAccountID(userName, password);
-    console.log("resultID: " + resultID);
-
-    if (resultID != "") {
-      SetCurrentID("currentAccountID", resultID);
-      console.log(
-        "currentAccountID - Login page: " + GetCurrentID("currentAccountID")
-      );
-      // navigation.navigate("UserProfile", { needLoad: true });
-      alert("OKOK");
-    } else {
-      alert("Invalid credentials. Please try again.");
-    }
-  };
-
-  const handleSignUp = () => {
-    router.replace("/SignUp");
+  const handleStart = () => {
+    router.replace("/Login");
   };
 
   return (
     <View style={styles.container}>
-      <Text>User Name</Text>
-      <TextInput
-        value={userName}
-        onChangeText={setuserName}
-        autoCapitalize="none"
-      />
-
-      <Text>Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-
-      <Button title="Login" onPress={handleLogin} />
-      <Button title="Sign Up" onPress={handleSignUp} />
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleStart()}
+        >
+          <Text style={styles.buttonText}>Go</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     flex: 1,
     justifyContent: "center",
     padding: 24,
+  },
+  rowView: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 2,
+    marginVertical: 10,
+    marginHorizontal: 5,
+  },
+  submitButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
+    height: 50,
+    marginTop: 20,
+    marginBottom: 50,
+  },
+  buttonText: {
+    padding: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
   },
 });

@@ -7,7 +7,7 @@ import {
   Button,
   Pressable,
 } from "react-native";
-import { router, Link } from "expo-router";
+import { router } from "expo-router";
 
 import {
   CheckUsernameisExist,
@@ -34,6 +34,7 @@ export default function Signup() {
   const handleSignup = async (message) => {
     if (message == "Cancel") {
       router.replace("/Login");
+      // router.replace("/");
       return;
     }
     // Check if the user has entered all the required fields

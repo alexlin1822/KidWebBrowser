@@ -2,24 +2,28 @@
  * Common functions for all pages and components
  * Global variables for all pages and components
  * Save and load data in Storage
- *
- * @module utility/Common
- * @requires react
- * @requires react-native
- *
  */
-// import CryptoJS from "crypto-js";
+import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 
 /* Global variables */
 // App settings
-// const appName = "@KidWebBrowser";
 const appName = "KidWebBrowser";
 
 // Account data
 let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
+
+let timeLeft = 0; // Time left for current resource
+
+export function setTimeLeft(value) {
+  timeLeft = value;
+}
+
+export function getTimeLeft() {
+  return timeLeft;
+}
 
 /* Common functions for all pages and components*/
 
@@ -145,24 +149,13 @@ export async function GetAccountID(username, password) {
  * @returns {string} random string
  */
 export function GenerateNewId(idType) {
+  const UUID = Crypto.randomUUID();
   if (idType === "account") {
-    return (
-      Math.random().toString(36).slice(2, 11) +
-      "-a-" +
-      Math.random().toString(36).slice(2, 10)
-    );
+    return "a-" + UUID;
   } else if (idType === "member") {
-    return (
-      Math.random().toString(36).slice(2, 6) +
-      "-m-" +
-      Math.random().toString(36).slice(2, 4)
-    );
+    return "m-" + UUID;
   } else if (idType === "resource") {
-    return (
-      Math.random().toString(36).slice(2, 9) +
-      "-r-" +
-      Math.random().toString(36).slice(2, 6)
-    );
+    return "r-" + UUID;
   } else {
     return "";
   }
@@ -241,36 +234,54 @@ async function LoadCurrentData(currentID) {
   }
 }
 
-// export function EncryptString(text) {
-//   if (text === "") {
-//     return "";
-//   }
+export function EncryptString(text) {
+  if (text === "") {
+    return "";
+  }
 
-//   // const randomBytes1 = new Uint8Array(4);
-//   // const randomBytes2 = new Uint8Array(4);
-//   // getRandomValues(randomBytes1);
-//   // getRandomValues(randomBytes2);
-//   // console.log(randomBytes1);
-//   // console.log(randomBytes2);
-//   // return "";
-//   // let secretKey1 = Math.random().toString(36).slice(2, 6);
-//   // let secretKey2 = Math.random().toString(36).slice(2, 6);
+  // const randomBytes1 = new Uint8Array(4);
+  // const randomBytes2 = new Uint8Array(4);
+  // getRandomValues(randomBytes1);
+  // getRandomValues(randomBytes2);
+  // console.log(randomBytes1);
+  // console.log(randomBytes2);
+  // return "";
+  // let secretKey1 = Math.random().toString(36).slice(2, 6);
+  // let secretKey2 = Math.random().toString(36).slice(2, 6);
 
-//   // const encrypted = CryptoJS.AES.encrypt(text, secretKey1 + secretKey2);
-//   // result = secretKey1 + encrypted.toString() + secretKey2;
-//   // return result;
+  // const encrypted = CryptoJS.AES.encrypt(text, secretKey1 + secretKey2);
+  // result = secretKey1 + encrypted.toString() + secretKey2;
+  // return result;
 
-//   return CryptoJS.AES.encrypt(text, "aabbc").toString();
+  return CryptoJS.AES.encrypt(text, "aabbc").toString();
+}
+
+export function DecryptString(encryptedText) {
+  if (encryptedText === "") {
+    return "";
+  }
+  // let secretKey1 = encryptedText.slice(0, 4);
+  // let secretKey2 = encryptedText.slice(-4);
+  // encryptedText = encryptedText.slice(4, -4);
+  // const bytes = CryptoJS.AES.decrypt(encryptedText, secretKey1 + secretKey2);
+  const bytes = CryptoJS.AES.decrypt(encryptedText, "aabbc");
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+// export function getShowNavigationBar() {
+//   return showNavigationBar;
 // }
 
-// export function DecryptString(encryptedText) {
-//   if (encryptedText === "") {
-//     return "";
-//   }
-//   // let secretKey1 = encryptedText.slice(0, 4);
-//   // let secretKey2 = encryptedText.slice(-4);
-//   // encryptedText = encryptedText.slice(4, -4);
-//   // const bytes = CryptoJS.AES.decrypt(encryptedText, secretKey1 + secretKey2);
-//   const bytes = CryptoJS.AES.decrypt(encryptedText, "aabbc");
-//   return bytes.toString(CryptoJS.enc.Utf8);
+// export function setShowNavigationBar(value) {
+//   set_ShowNavigationBar(value);
+// }
+
+// let currentAccountID = ""; // Current account ID
+// let currentMemberList = ""; // Current member list in current account
+
+// let focusMemberID = ""; // focus member ID in current account ID
+// let focusMemberBrowseList = ""; // resource list and settings of focus member (list of URL, title, description, icon, memo, status) Current account family member list and settings
+
+// export function setCurrentAccountAndMemberList(value) {
+//   currentAccountID = value;
 // }
