@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
 import {
@@ -101,38 +102,40 @@ export default function Signup() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Name</Text>
-      <TextInput value={text_nickname} onChangeText={setNickName} />
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Text>Name</Text>
+        <TextInput value={text_nickname} onChangeText={setNickName} />
 
-      <Text>User Name</Text>
-      <TextInput value={text_username} onChangeText={setUserName} />
+        <Text>User Name</Text>
+        <TextInput value={text_username} onChangeText={setUserName} />
 
-      <Text>Email</Text>
-      <TextInput
-        value={text_email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
+        <Text>Email</Text>
+        <TextInput
+          value={text_email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
 
-      <Text>Password</Text>
-      <TextInput
-        value={text_password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
+        <Text>Password</Text>
+        <TextInput
+          value={text_password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
 
-      <Button
-        style={styles.submitButton}
-        title="Sign Up"
-        onPress={() => handleSignup("Sign Up")}
-      />
-      <Button
-        style={styles.submitButton}
-        title="Cancel"
-        onPress={() => handleSignup("Cancel")}
-      />
-    </View>
+        <Button
+          style={styles.submitButton}
+          title="Sign Up"
+          onPress={() => handleSignup("Sign Up")}
+        />
+        <Button
+          style={styles.submitButton}
+          title="Cancel"
+          onPress={() => handleSignup("Cancel")}
+        />
+      </View>
+    </SafeAreaProvider>
   );
 }
 

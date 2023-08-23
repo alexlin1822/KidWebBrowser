@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GetAccountID, SetCurrentID } from "./utility/Common";
 import { router } from "expo-router";
 
@@ -28,24 +29,26 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>User Name</Text>
-      <TextInput
-        value={userName}
-        onChangeText={setuserName}
-        autoCapitalize="none"
-      />
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Text>User Name</Text>
+        <TextInput
+          value={userName}
+          onChangeText={setuserName}
+          autoCapitalize="none"
+        />
 
-      <Text>Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
+        <Text>Password</Text>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
 
-      <Button title="Login" onPress={handleLogin} />
-      <Button title="Sign Up" onPress={handleSignUp} />
-    </View>
+        <Button title="Login" onPress={handleLogin} />
+        <Button title="Sign Up" onPress={handleSignUp} />
+      </View>
+    </SafeAreaProvider>
   );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 
 import {
@@ -102,58 +103,60 @@ export default function UserEdit() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.rowView}>
-        <Text style={styles.text}>Name</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={setTitle}
-          value={title}
-          placeholder="Plesae type the name here. "
-        />
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Name</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setTitle}
+            value={title}
+            placeholder="Plesae type the name here. "
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Description</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setDescription}
+            value={description}
+            placeholder="Plesae type the description here. "
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Icon</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setIcon}
+            value={icon}
+            placeholder="Plesae type the icon here. "
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Memo</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setMemo}
+            value={memo}
+            placeholder="Plesae type the memo here. "
+          />
+        </View>
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleCancel()}
+          >
+            <Text style={styles.buttonText}> Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleSubmit()}
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.rowView}>
-        <Text style={styles.text}>Description</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={setDescription}
-          value={description}
-          placeholder="Plesae type the description here. "
-        />
-      </View>
-      <View style={styles.rowView}>
-        <Text style={styles.text}>Icon</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={setIcon}
-          value={icon}
-          placeholder="Plesae type the icon here. "
-        />
-      </View>
-      <View style={styles.rowView}>
-        <Text style={styles.text}>Memo</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={setMemo}
-          value={memo}
-          placeholder="Plesae type the memo here. "
-        />
-      </View>
-      <View style={styles.rowView}>
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => handleCancel()}
-        >
-          <Text style={styles.buttonText}> Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => handleSubmit()}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaProvider>
   );
 }
 

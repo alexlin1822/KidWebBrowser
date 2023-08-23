@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
 export default function Page() {
@@ -7,19 +8,21 @@ export default function Page() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.rowView}>
-        <Text style={styles.text}>Kid Web Browser</Text>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Kid Web Browser</Text>
+        </View>
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleStart()}
+          >
+            <Text style={styles.buttonText}>Start Here</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.rowView}>
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => handleStart()}
-        >
-          <Text style={styles.buttonText}>Start Here</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaProvider>
   );
 }
 

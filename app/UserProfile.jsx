@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 
 import {
@@ -90,31 +91,33 @@ export default function UserProfile() {
     return <ActivityIndicator size="large" color="#0000ff" />;
   } else {
     return (
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => clickLogout()}
-          >
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
+      <SafeAreaProvider>
+        <View style={styles.container}>
+          <View style={styles.rowView}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => clickLogout()}
+            >
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.rowView}>
+            <Text style={[styles.buttonText, { color: "black" }]}>
+              Please select one:{" "}
+            </Text>
+          </View>
+          <View style={styles.rowView}>
+            {myAccountProfile.memberlist.map((item) => (
+              <PeopleCard
+                key={item.key}
+                item={item}
+                onSubmitResource={() => clickPeopleCard(item, false)}
+                onSubmitLongResource={() => clickPeopleCard(item, true)}
+              />
+            ))}
+          </View>
         </View>
-        <View style={styles.rowView}>
-          <Text style={[styles.buttonText, { color: "black" }]}>
-            Please select one:{" "}
-          </Text>
-        </View>
-        <View style={styles.rowView}>
-          {myAccountProfile.memberlist.map((item) => (
-            <PeopleCard
-              key={item.key}
-              item={item}
-              onSubmitResource={() => clickPeopleCard(item, false)}
-              onSubmitLongResource={() => clickPeopleCard(item, true)}
-            />
-          ))}
-        </View>
-      </View>
+      </SafeAreaProvider>
     );
   }
 }

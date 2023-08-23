@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { WebView } from "react-native-webview";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -73,11 +74,13 @@ export default function Browser() {
     if (newResourceProfile === null) {
       // Cancel button
       // Just return to home page
+      console.log("Browser - handleEditSubmit: Cancel button");
       SetCurrentID("currentResourceID", "");
       router.push({
         pathname: "/Home",
         params: { needLoad: false },
       });
+      return;
     }
 
     // Clicked submit button
@@ -163,6 +166,7 @@ export default function Browser() {
     } else if (type === "Exit") {
       updateLastURL(focusMemberID, url);
       SetCurrentID("currentResourceID", "");
+      console.log("Browser - Exit: " + currentResourceID);
       router.push({
         pathname: "/Home",
         params: { needLoad: false },
@@ -263,50 +267,51 @@ export default function Browser() {
   };
 
   return (
-    <View style={styles.container}>
-      {isEditMode ? (
-        <View>
-          <SearchBar
-            onSubmit={handleSubmit}
-            updateURL={url}
-            onGoBack={() => handleMenuClicked("GoBack")}
-            onGoForward={() => handleMenuClicked("GoForward")}
-            onReload={() => handleMenuClicked("Reload")}
-          />
-          <BrowserEditBar
-            onEditBarSubmit={handleEditSubmit}
-            resourceList={resourceProfile}
-            updateURL={url}
-            updateTitle={webTitle}
-          />
-        </View>
-      ) : (
-        isShowViewMenu && (
-          <BrowserViewBar
-            resourceList={resourceProfile}
-            timeLeft={timeLeft}
-            onClick={handleMenuClicked}
-          />
-        )
-      )}
-      <WebView
-        ref={webViewRef}
-        style={styles.webview}
-        source={{ uri: url }}
-        onNavigationStateChange={handleUrlChange}
-        javaScriptEnabled={true}
-        userAgent={customUserAgent}
-        sharedCookiesEnabled={true}
-      />
-      {/* <StatusBar style="auto" /> */}
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        {isEditMode ? (
+          <View>
+            <SearchBar
+              onSubmit={handleSubmit}
+              updateURL={url}
+              onGoBack={() => handleMenuClicked("GoBack")}
+              onGoForward={() => handleMenuClicked("GoForward")}
+              onReload={() => handleMenuClicked("Reload")}
+            />
+            <BrowserEditBar
+              onEditBarSubmit={handleEditSubmit}
+              resourceList={resourceProfile}
+              updateURL={url}
+              updateTitle={webTitle}
+            />
+          </View>
+        ) : (
+          isShowViewMenu && (
+            <BrowserViewBar
+              resourceList={resourceProfile}
+              timeLeft={timeLeft}
+              onClick={handleMenuClicked}
+            />
+          )
+        )}
+        <WebView
+          ref={webViewRef}
+          style={styles.webview}
+          source={{ uri: url }}
+          onNavigationStateChange={handleUrlChange}
+          javaScriptEnabled={true}
+          userAgent={customUserAgent}
+          sharedCookiesEnabled={true}
+        />
+        {/* <StatusBar style="auto" /> */}
 
-      {!isEditMode && (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={clickHandler}
-          style={styles.touchableOpacityStyle}
-        >
-          {/* <Image
+        {!isEditMode && (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={clickHandler}
+            style={styles.touchableOpacityStyle}
+          >
+            {/* <Image
           //We are making FAB using TouchableOpacity with an image
           //We are using online image here
           source={{
@@ -317,14 +322,15 @@ export default function Browser() {
           style={styles.floatingButtonStyle}
         />
          */}
-          <MaterialCommunityIcons
-            name="arrow-top-left-bold-box"
-            size={50}
-            color="orange"
-          />
-        </TouchableOpacity>
-      )}
-    </View>
+            <MaterialCommunityIcons
+              name="arrow-top-left-bold-box"
+              size={50}
+              color="orange"
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaProvider>
   );
 }
 
@@ -338,7 +344,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   webview: {
-    marginTop: 10,
+    flex: 1,
   },
   touchableOpacityStyle: {
     position: "absolute",

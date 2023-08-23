@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
@@ -97,29 +98,35 @@ export default function Home() {
   }, []);
 
   if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <SafeAreaProvider>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaProvider>
+    );
   } else {
     return (
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => clickLogout()}
-          >
-            <Text style={styles.buttonText}>Go Back</Text>
-          </TouchableOpacity>
-        </View>
+      <SafeAreaProvider>
         <View style={styles.container}>
-          {resourceProfile.resourcelist.map((item) => (
-            <ResourceCard
-              key={item.rid}
-              item={item}
-              onSubmitResource={() => clickResourceCard(item, false)}
-              onSubmitLongResource={() => clickResourceCard(item, true)}
-            />
-          ))}
+          <View style={styles.rowView}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => clickLogout()}
+            >
+              <Text style={styles.buttonText}>Go Back</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.container}>
+            {resourceProfile.resourcelist.map((item) => (
+              <ResourceCard
+                key={item.rid}
+                item={item}
+                onSubmitResource={() => clickResourceCard(item, false)}
+                onSubmitLongResource={() => clickResourceCard(item, true)}
+              />
+            ))}
+          </View>
         </View>
-      </View>
+      </SafeAreaProvider>
     );
   }
 }

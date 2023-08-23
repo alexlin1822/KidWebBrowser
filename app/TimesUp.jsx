@@ -1,6 +1,7 @@
 import { useNavigation, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { View, StyleSheet, Text, Button } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
 export default function TimesUp() {
@@ -23,10 +24,12 @@ export default function TimesUp() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Times Up</Text>
-      <Button style={styles.button} title="Go Back" onPress={handleReturn} />
-    </View>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Text style={styles.text}>Times Up</Text>
+        <Button style={styles.button} title="Go Back" onPress={handleReturn} />
+      </View>
+    </SafeAreaProvider>
   );
 }
 
