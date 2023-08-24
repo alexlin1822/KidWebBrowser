@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
@@ -15,6 +21,8 @@ import {
   InitNewAccountList_local,
   AddNewAccount,
 } from "./utility/DataStructure";
+
+import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
 export default function Signup() {
   const [text_nickname, setNickName] = useState("");
@@ -104,55 +112,61 @@ export default function Signup() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Text>Name</Text>
-        <TextInput value={text_nickname} onChangeText={setNickName} />
+        <View style={styles.rowView}>
+          <Text>Name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={text_nickname}
+            onChangeText={setNickName}
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text>User Name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={text_username}
+            onChangeText={setUserName}
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text>Email</Text>
+          <TextInput
+            style={styles.textInput}
+            value={text_email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text>Password</Text>
+          <TextInput
+            style={styles.textInput}
+            value={text_password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+        </View>
 
-        <Text>User Name</Text>
-        <TextInput value={text_username} onChangeText={setUserName} />
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleSignup("Sign Up")}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Text>Email</Text>
-        <TextInput
-          value={text_email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-        />
-
-        <Text>Password</Text>
-        <TextInput
-          value={text_password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
-
-        <Button
-          style={styles.submitButton}
-          title="Sign Up"
-          onPress={() => handleSignup("Sign Up")}
-        />
-        <Button
-          style={styles.submitButton}
-          title="Cancel"
-          onPress={() => handleSignup("Cancel")}
-        />
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleSignup("Cancel")}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-  },
-  submitButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 100,
-    paddingHorizontal: 10,
-    backgroundColor: "blue",
-    borderRadius: 5,
-    height: 50,
-    flex: 0.5,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

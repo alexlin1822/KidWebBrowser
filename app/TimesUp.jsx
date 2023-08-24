@@ -1,33 +1,25 @@
-import { useNavigation, useRouter } from "expo-router";
-import { useEffect } from "react";
-import { View, StyleSheet, Text, Button } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 export default function TimesUp() {
+  console.log("TimesUp - time is up");
   const handleReturn = async () => {
     router.replace("/Login");
+    return;
   };
-
-  // Navigation
-  const navigation = useNavigation();
-
-  // Effect
-  useEffect(() => {
-    navigation.addListener("beforeRemove", (e) => {
-      e.preventDefault();
-      console.log("onback");
-      // Do your stuff here
-      // navigation.dispatch(e.data.action);
-      // router.replace("/Login");
-    });
-  }, []);
 
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Text style={styles.text}>Times Up</Text>
-        <Button style={styles.button} title="Go Back" onPress={handleReturn} />
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          onPress={() => handleReturn()}
+        >
+          <MaterialCommunityIcons name="timer" size={128} color="lightblue" />
+          <Text style={styles.text}>Times Up</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );
@@ -40,15 +32,20 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontSize: 60,
+    fontSize: 64,
     fontWeight: "bold",
     marginHorizontal: 10,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
     margin: 20,
+    color: "orange",
   },
-  button: {
-    height: 40,
+  touchableOpacity: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
 });

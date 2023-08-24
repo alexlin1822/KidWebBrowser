@@ -1,8 +1,21 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { GetAccountID, SetCurrentID } from "./utility/Common";
 import { router } from "expo-router";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from "react-native";
+
+import {
+  GetAccountID,
+  SetCurrentID,
+  resetTotalTimeSpend,
+} from "./utility/Common";
+
+import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
 export default function Login() {
   const [userName, setuserName] = useState("");
@@ -14,7 +27,7 @@ export default function Login() {
 
     if (resultID != "") {
       SetCurrentID("currentAccountID", resultID);
-
+      resetTotalTimeSpend();
       router.push({
         pathname: "/UserProfile",
         params: { needLoad: true },
@@ -31,31 +44,45 @@ export default function Login() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Text>User Name</Text>
-        <TextInput
-          value={userName}
-          onChangeText={setuserName}
-          autoCapitalize="none"
-        />
+        <View style={styles.rowView}>
+          <Text>User Name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={userName}
+            onChangeText={setuserName}
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text>Password</Text>
+          <TextInput
+            style={styles.textInput}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+        </View>
 
-        <Text>Password</Text>
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleLogin()}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
 
-        <Button title="Login" onPress={handleLogin} />
-        <Button title="Sign Up" onPress={handleSignUp} />
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleSignUp()}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 24,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

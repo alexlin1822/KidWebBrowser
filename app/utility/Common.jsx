@@ -3,6 +3,7 @@
  * Global variables for all pages and components
  * Save and load data in Storage
  */
+import React, { useState } from "react";
 import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
 
@@ -15,14 +16,26 @@ let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
 
-let timeLeft = 0; // Time left for current resource
+// let timeLeft = 0; // Time left for current resource
 
-export function setTimeLeft(value) {
-  timeLeft = value;
+let totalTimeSpend = 0; // Total time spend on current resource
+
+// const [totalTimeSpend, setTotalTimeSpend] = useState(0); // Total time spend on current resource
+
+export function setTotalTimeSpend(value) {
+  totalTimeSpend = value;
 }
 
-export function getTimeLeft() {
-  return timeLeft;
+export function resetTotalTimeSpend() {
+  totalTimeSpend = 0;
+}
+
+export function AddOneTotalTimeSpend() {
+  totalTimeSpend += 1;
+}
+
+export function getTotalTimeSpend() {
+  return totalTimeSpend;
 }
 
 /* Common functions for all pages and components*/

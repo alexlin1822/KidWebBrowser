@@ -127,9 +127,14 @@ export default function BrowserEditBar({
     onEditBarSubmit(newResourceList);
   };
 
+  /**
+   * Get the icon from the URL by using google favicon API
+   * @param {*} url
+   * @returns
+   */
   const getIcon = (url) => {
-    let icon = url + "favicon.ico";
-    // await getFavicons(url);
+    let icon = "https://www.google.com/s2/favicons?domain=" + url + "&sz=48";
+    console.log("browser_edit_bar  getIcon - icon : ", icon);
     return icon;
   };
 

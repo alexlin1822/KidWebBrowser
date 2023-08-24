@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "react-native-image-picker";
 
 import {
   View,
@@ -8,6 +10,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import {
   GetCurrentID,
@@ -17,6 +20,7 @@ import {
   GetStorageKey,
   GenerateNewId,
 } from "./utility/Common";
+import { styleSheetCustom } from "./utility/styles";
 
 export default function UserEdit() {
   const params = useLocalSearchParams();
@@ -27,17 +31,37 @@ export default function UserEdit() {
   const currentAccountID = GetCurrentID("currentAccountID");
   const focusMemberID = item.key;
 
-  const [title, setTitle] = useState(item.title);
-  const [description, setDescription] = useState(item.description);
+  const [title, setTitle] = useState(focusMemberID === "0" ? "" : item.title);
+  const [description, setDescription] = useState(
+    focusMemberID === "0" ? "" : item.description
+  );
   const [icon, setIcon] = useState(
     item.key === "0" ? item.icon.toString().replace("0.", "1.") : item.icon
   );
-  const [memo, setMemo] = useState(item.memo);
+  const [memo, setMemo] = useState(focusMemberID === "0" ? "" : item.memo);
   const [status, setStatus] = useState(item.status);
+
+  const Item = Picker.Item;
+  const [valuePick, setValuePick] = useState("key1");
+
+  const [response, setResponse] = React.useState(null);
+
+  // const onButtonPress = React.useCallback((type, options) => {
+  //   if (type === "capture") {
+  //     ImagePicker.launchCamera(options, setResponse);
+  //   } else {
+  //     ImagePicker.launchImageLibrary(options, setResponse);
+  //   }
+  // }, []);
 
   // PeopleCard click event
   const handleSubmit = async () => {
     console.log("handleSubmit");
+
+    if (title === "") {
+      alert("Please fill in the name");
+      return;
+    }
 
     let newPersionProfile = {
       key: focusMemberID === "0" ? GenerateNewId("member") : focusMemberID,
@@ -105,6 +129,23 @@ export default function UserEdit() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
+        {/* <View style={styles.rowView}>
+          <Picker
+            style={styles.picker}
+            testID="basic-picker"
+            selectedValue={valuePick}
+            onValueChange={(v) => setValuePick(v)}
+            accessibilityLabel="Basic Picker Accessibility Label"
+          >
+            <Item label="hello" value="key0">
+              <Image
+                source={require("./assets/1.png")}
+                style={{ width: 24, height: 24 }}
+              />
+            </Item>
+            <Item label="world" value="key1" />
+          </Picker>
+        </View> */}
         <View style={styles.rowView}>
           <Text style={styles.text}>Name</Text>
           <TextInput
@@ -143,13 +184,13 @@ export default function UserEdit() {
         </View>
         <View style={styles.rowView}>
           <TouchableOpacity
-            style={styles.submitButton}
+            style={[styles.submitButton, { marginHorizontal: 50 }]}
             onPress={() => handleCancel()}
           >
             <Text style={styles.buttonText}> Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.submitButton}
+            style={[styles.submitButton, { marginHorizontal: 50 }]}
             onPress={() => handleSubmit()}
           >
             <Text style={styles.buttonText}>Submit</Text>
@@ -160,68 +201,77 @@ export default function UserEdit() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    marginTop: 30,
-    margin: 10,
-    flex: 1,
-  },
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 5,
-    margin: 10,
-  },
-  submitButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 100,
-    paddingHorizontal: 10,
-    backgroundColor: "blue",
-    borderRadius: 5,
-    height: 50,
-    flex: 0.5,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-  optionButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 120,
-    backgroundColor: "grey",
-    padding: 10,
-    marginHorizontal: 5,
-    marginVertical: 2,
-    borderRadius: 5,
-  },
-  optionButtonSelected: {
-    backgroundColor: "green",
-  },
-  optionText: {
-    color: "white",
-    fontSize: 16,
-  },
-  selectedOptionsText: {
-    marginTop: 20,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 16,
-    marginLeft: 2,
-    paddingLeft: 10,
-    height: 36,
-    borderColor: "gray",
-    borderWidth: 1,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);
+
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 10,
+//     marginTop: 30,
+//     margin: 10,
+//     flex: 1,
+//   },
+//   rowView: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     padding: 5,
+//     margin: 10,
+//   },
+//   submitButton: {
+//     alignItems: "center",
+//     justifyContent: "center",
+//     marginHorizontal: 100,
+//     paddingHorizontal: 10,
+//     backgroundColor: "blue",
+//     borderRadius: 5,
+//     height: 50,
+//     flex: 0.5,
+//   },
+//   buttonText: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     color: "white",
+//   },
+//   text: {
+//     fontSize: 12,
+//     fontWeight: "bold",
+//     marginLeft: 10,
+//   },
+//   optionButton: {
+//     alignItems: "center",
+//     justifyContent: "center",
+//     width: 120,
+//     backgroundColor: "grey",
+//     padding: 10,
+//     marginHorizontal: 5,
+//     marginVertical: 2,
+//     borderRadius: 5,
+//   },
+//   optionButtonSelected: {
+//     backgroundColor: "green",
+//   },
+//   optionText: {
+//     color: "white",
+//     fontSize: 16,
+//   },
+//   selectedOptionsText: {
+//     marginTop: 20,
+//     fontSize: 16,
+//     fontWeight: "bold",
+//   },
+//   textInput: {
+//     flex: 1,
+//     fontSize: 16,
+//     marginLeft: 2,
+//     paddingLeft: 10,
+//     height: 36,
+//     borderColor: "gray",
+//     borderWidth: 1,
+//   },
+//   picker: {
+//     flex: 0.5,
+//     width: 300,
+//     height: 100,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });

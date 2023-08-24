@@ -1,0 +1,50 @@
+export const styleSheetCustom = {
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 1,
+  },
+  edit_bar_container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    paddingTop: 40,
+    paddingBottom: 5,
+    paddingHorizontal: 5,
+  },
+  webview: {
+    flex: 1,
+  },
+  rowView: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    marginHorizontal: 10,
+    height: 36,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
+  submitButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 150,
+    paddingHorizontal: 10,
+    backgroundColor: "orange",
+    borderRadius: 5,
+    height: 65,
+    marginVertical: 50,
+  },
+  buttonText: {
+    padding: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+};

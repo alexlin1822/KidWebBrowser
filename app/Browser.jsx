@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { WebView } from "react-native-webview";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -11,6 +11,8 @@ import {
   LoadData_local,
   SaveData_local,
   GetStorageKey,
+  AddOneTotalTimeSpend,
+  getTotalTimeSpend,
 } from "./utility/Common";
 import BrowserViewBar from "./components/browser_view_bar";
 import SearchBar from "./components/search_bar";
@@ -38,30 +40,28 @@ export default function Browser() {
 
   const webViewRef = useRef(null);
 
-  const [timeLeft, setTimeLeft] = useState(parseInt(item.time_limit));
+  const [timeLeft, setTimeLeft] = useState(
+    parseInt(item.time_limit) - getTotalTimeSpend()
+  );
   const [isShowViewMenu, setIsShowViewMenu] = useState(false);
-
   const customUserAgent =
     "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
 
   // Times up function
   useEffect(() => {
     if (isEditMode) return;
+    if (timeLeft <= 0) {
+      router.replace("/TimesUp");
+      return;
+    }
 
     const timer = setInterval(() => {
+      AddOneTotalTimeSpend();
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000 * 60);
 
     return () => clearInterval(timer);
-  }, []);
-
-  function timesUp() {
-    router.replace("/TimesUp");
-  }
-
-  if (timeLeft === 0) {
-    timesUp();
-  }
+  }, [timeLeft]);
 
   console.log("Browser - currentResourceID : " + currentResourceID);
 
@@ -176,6 +176,11 @@ export default function Browser() {
     }
   };
 
+  /**
+   * Update last url to local storage
+   * @param {*} myfocusMemberID
+   * @param {*} newURL
+   */
   const updateLastURL = async (myfocusMemberID, newURL) => {
     console.log("Browser - updateLastURL: " + myfocusMemberID + "  " + newURL);
     let value = await LoadData_local(
