@@ -11,6 +11,8 @@ export function InitNewAccountList_local(
   text_email,
   text_password
 ) {
+  //db:kwb
+  //collection: accounts
   let myAccountList = [];
   myAccountList.push(
     AddNewAccount(
@@ -25,6 +27,15 @@ export function InitNewAccountList_local(
 }
 
 // #### Add a new account object ####
+/**
+ *
+ * @param {*} accountID
+ * @param {*} text_nickname
+ * @param {*} text_username
+ * @param {*} text_email
+ * @param {*} text_password
+ * @returns Dictionary
+ */
 export function AddNewAccount(
   accountID,
   text_nickname,
@@ -43,10 +54,15 @@ export function AddNewAccount(
 }
 
 // #### Account profile object ####
-export function InitAccountProfile(accountID) {
+export function InitAccountProfile(accountID, text_nickname, text_email) {
+  //db:kwb
+  //collection: members
   console.log("InitAccountProfile");
   const myAccountProfile = {
     owner: accountID,
+    nickname: text_nickname,
+    username: text_username,
+    email: text_email,
     profile: {
       setting1: "aa",
       setting2: "bb",
@@ -69,6 +85,8 @@ export function InitAccountProfile(accountID) {
 // #### Resource profile object ####
 
 export function InitResourceProfile(memberID) {
+  //db:kwb
+  //collection: resources
   console.log("InitResourceProfile");
   const myResourceProfile = {
     owner: memberID,

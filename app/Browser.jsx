@@ -26,7 +26,6 @@ export default function Browser() {
 
   const [url, setUrl] = useState(item.last_url);
   const [webTitle, setWebTitle] = useState("");
-  // const [favicon, setFavicon] = useState("");
 
   const [resourceProfile, setResourceList] = useState(item);
 
@@ -58,7 +57,8 @@ export default function Browser() {
     const timer = setInterval(() => {
       AddOneTotalTimeSpend();
       setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000 * 60);
+    }, 1000);
+    //TODO: change to 1000 * 60
 
     return () => clearInterval(timer);
   }, [timeLeft]);
@@ -81,6 +81,20 @@ export default function Browser() {
         params: { needLoad: false },
       });
       return;
+    }
+
+    let result = "";
+    if (currentResourceID === "0") {
+      //Add new records
+      result = await SaveNewData(
+        GetStorageKey(currentAccountID, focusMemberID),
+        newResourceProfile
+      );
+    } else {
+      result = await SaveUpdateData(
+        GetStorageKey(currentAccountID, focusMemberID),
+        newResourceProfile
+      );
     }
 
     // Clicked submit button
@@ -217,8 +231,8 @@ export default function Browser() {
   };
 
   const handleUrlChange = (newNavState) => {
-    const { url, title, favicon } = newNavState;
-    console.log("Browser - handleUrlChange: favicon: " + favicon);
+    const { url, title } = newNavState;
+    console.log("Browser - handleUrlChange");
     if (isEditMode) {
       setUrl(url);
       setWebTitle(title);
@@ -231,6 +245,24 @@ export default function Browser() {
         setWebTitle(title);
       }
     }
+  };
+
+  const handleLoadEnd = (newNavState) => {
+    console.log("Browser - handleLoadEnd");
+    // const { url, title } = newNavState;
+    // console.log("Browser - handleUrlChange url=" + url + " title=" + title);
+    // if (isEditMode) {
+    //   setUrl(url);
+    //   setWebTitle(title);
+    // } else {
+    //   if (!checkWeb(url, title)) {
+    //     setUrl(item.default_url);
+    //     webViewRef.current.goBack();
+    //   } else {
+    //     setUrl(url);
+    //     setWebTitle(title);
+    //   }
+    // }
   };
 
   const clickHandler = () => {
@@ -307,6 +339,7 @@ export default function Browser() {
           javaScriptEnabled={true}
           userAgent={customUserAgent}
           sharedCookiesEnabled={true}
+          onLoadEnd={handleLoadEnd}
         />
         {/* <StatusBar style="auto" /> */}
 

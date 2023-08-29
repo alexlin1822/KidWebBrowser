@@ -22,10 +22,12 @@ import PeopleCard from "./components/people_card";
 
 export default function UserProfile() {
   const params = useLocalSearchParams();
-  const { needLoad } = params;
+  const { needLoad, account_profile } = params;
 
-  const [isLoading, setIsLoading] = useState(needLoad);
-  const [myAccountProfile, setMyAccountProfile] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [dictAccountProfile, setDictMyAccountProfile] = useState(
+    JSON.parse(account_profile)
+  );
 
   const currentAccountID = GetCurrentID("currentAccountID");
 
@@ -54,38 +56,42 @@ export default function UserProfile() {
     router.replace("/Login");
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      // For test clear this account profile
-      // await SaveData_local(GetStorageKey(currentAccountID), "");
+  // useEffect(() => {
+  //   async function fetchData() {
+  // For test clear this account profile
+  // await SaveData_local(GetStorageKey(currentAccountID), "");
 
-      try {
-        // Pre-load
-        let value = await LoadData_local(GetStorageKey(currentAccountID));
+  //     try {
+  // JSON.loads(result);
+  // setMyAccountProfile(account_profile); // // Load account profile
+  // console.log("UserProfile  - fetchData(): " + result);
+  // // Pre-load
+  // let value = await LoadData_local(GetStorageKey(currentAccountID));
+  // let tmpAccountProfile = {};
+  // if (value !== "") {
+  //   tmpAccountProfile = JSON.parse(value);
+  // } else {
+  //   value = InitAccountProfile(currentAccountID);
+  //   tmpAccountProfile = JSON.parse(value);
+  //   await SaveData_local(GetStorageKey(currentAccountID), value);
+  // }
+  // setMyAccountProfile(tmpAccountProfile);
+  // console.log(
+  //   "UserProfile  - fetchData(): " + JSON.stringify(tmpAccountProfile)
+  // );
+  //     } catch (e) {
+  //       console.warn(e);
+  //     } finally {
+  //       // Tell the application to render
+  //       setIsLoading(false);
+  //     }
+  //   }
 
-        let tmpAccountProfile = {};
+  //   fetchData();
+  // }, []);
 
-        if (value !== "") {
-          tmpAccountProfile = JSON.parse(value);
-        } else {
-          value = InitAccountProfile(currentAccountID);
-          tmpAccountProfile = JSON.parse(value);
-          await SaveData_local(GetStorageKey(currentAccountID), value);
-        }
-        setMyAccountProfile(tmpAccountProfile);
-        console.log(
-          "UserProfile  - fetchData(): " + JSON.stringify(tmpAccountProfile)
-        );
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        // Tell the application to render
-        setIsLoading(false);
-      }
-    }
-
-    fetchData();
-  }, []);
+  console.log("UserProfile - myAccountProfile: ");
+  console.log(dictAccountProfile);
 
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -107,7 +113,7 @@ export default function UserProfile() {
             </Text>
           </View>
           <View style={styles.rowView}>
-            {myAccountProfile.memberlist.map((item) => (
+            {dictAccountProfile.memberlist.map((item) => (
               <PeopleCard
                 key={item.key}
                 item={item}

@@ -3,9 +3,8 @@
  * Global variables for all pages and components
  * Save and load data in Storage
  */
-import React, { useState } from "react";
-import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
+import * as Crypto from "expo-crypto";
 
 /* Global variables */
 // App settings
@@ -16,15 +15,9 @@ let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
 
-// let timeLeft = 0; // Time left for current resource
-
 let totalTimeSpend = 0; // Total time spend on current resource
 
-// const [totalTimeSpend, setTotalTimeSpend] = useState(0); // Total time spend on current resource
-
-export function setTotalTimeSpend(value) {
-  totalTimeSpend = value;
-}
+let remoteMode = false; // Current user profile setting
 
 export function resetTotalTimeSpend() {
   totalTimeSpend = 0;
@@ -38,50 +31,15 @@ export function getTotalTimeSpend() {
   return totalTimeSpend;
 }
 
+export function setIsRemote(value) {
+  remoteMode = value;
+}
+
+export function getIsRemote() {
+  return remoteMode;
+}
+
 /* Common functions for all pages and components*/
-
-/** Save data to Storage
- * @param {*} keyname : String
- * @param {*} content : String
- * @returns : Boolean
- */
-export async function SaveData_local(keyname, content) {
-  console.log(`Common - SaveData_local : ` + keyname + "  Content: " + content);
-  // Save the user data in Storage
-  try {
-    // return await SecureStore.setItemAsync(keyname, content);
-    return await SecureStore.setItemAsync(keyname, content);
-  } catch (error) {
-    // Error saving data
-    console.log("Common - SaveData_local Error:");
-    console.log(error);
-    return false;
-  }
-}
-
-/** Load data from Storage
- * @param {*} keyname : String
- * @returns : Boolean
- */
-export async function LoadData_local(keyname) {
-  // Load current account numbers and list in Storage
-  try {
-    // const value = await SecureStore.getItemAsync(keyname);
-    const value = await SecureStore.getItemAsync(keyname);
-
-    console.log(`Common - LoadData_local : ` + keyname + "  Content: " + value);
-
-    if (value !== null) {
-      return value;
-    } else {
-      return "";
-    }
-  } catch (error) {
-    console.log("Common - LoadData_local Error:");
-    console.log(error);
-    return "";
-  }
-}
 
 /**
  * Get Storage Key
@@ -96,71 +54,15 @@ export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
     //In the remote version, the account list is stored in the server
     result = appName + "." + "accountList"; // Acount List storage Key (just for local version)
   } else if (accountID != "" && memberID === "" && resourceID === "") {
-    result = appName + "." + accountID; // Account storage data Key
+    result = appName + "." + accountID; // Account profile storage data Key (Storaging member list and account settings)
   } else if (accountID != "" && memberID != "" && resourceID === "") {
-    result = appName + "." + accountID + "-" + memberID; // Member data
+    result = appName + "." + accountID + "-" + memberID; // (Storaging a member information and resources list)
   } else if (accountID != "" && memberID != "" && resourceID != "") {
-    result = appName + "." + accountID + "-" + memberID + "-" + resourceID; // Resource data
+    result = appName + "." + accountID + "-" + memberID + "-" + resourceID; // Not used
   }
 
   console.log(`Common - GetStorageKey : ${result}`);
   return result;
-}
-
-/**
- * check if the username or email is exist
- * @param {*} username
- * @param {*} email
- * @returns
- */
-export async function CheckUsernameisExist(username, email) {
-  console.log(`Common - CheckUsernameisExist `);
-  //get account list
-  let accountList = await LoadData_local(GetStorageKey());
-
-  if (accountList === "") {
-    return "0";
-  }
-
-  let dictAccountList = JSON.parse(accountList);
-  for (let i = 0; i < dictAccountList.length; i++) {
-    if (dictAccountList[i].username === username) {
-      return 1;
-    } else if (dictAccountList[i].email === email) {
-      return 2;
-    }
-  }
-  return "0";
-}
-
-/**
- * Get account id by username and password
- * @param {*} username :string
- * @param {*} password :string
- * @returns : string
- */
-export async function GetAccountID(username, password) {
-  //get account list
-  let accountList = await LoadData_local(GetStorageKey());
-
-  if (accountList === "") {
-    return "";
-  }
-
-  let dictAccountList = JSON.parse(accountList);
-  let accountID = "";
-  for (let i = 0; i < dictAccountList.length; i++) {
-    if (
-      dictAccountList[i].username === username &&
-      dictAccountList[i].password === password
-    ) {
-      accountID = dictAccountList[i].accountID;
-      break;
-    }
-  }
-
-  console.log(`Common - GetAccountID : ${accountID}`);
-  return accountID;
 }
 
 /**
@@ -190,7 +92,6 @@ export function GenerateNewId(idType) {
  * @returns : String
  */
 export function GetCurrentID(keyname) {
-  console.log("Common - GetInfo: " + keyname);
   if (keyname === "currentAccountID") {
     console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
     return currentAccountID;
@@ -201,6 +102,7 @@ export function GetCurrentID(keyname) {
     console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
     return currentResourceID;
   } else {
+    console.log("Common - GetInfo: " + keyname + " return empty string");
     return "";
   }
 }
@@ -256,6 +158,17 @@ async function LoadCurrentData(currentID) {
     console.log(error);
     return false;
   }
+}
+
+/**
+ * Get the icon from the URL by using google favicon API
+ * @param {*} url
+ * @returns
+ */
+export function getIcon(url) {
+  let icon = "https://www.google.com/s2/favicons?domain=" + url + "&sz=48";
+  console.log("browser_edit_bar  getIcon - icon : ", icon);
+  return icon;
 }
 
 export function EncryptString(text) {

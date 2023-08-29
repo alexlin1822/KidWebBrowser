@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getIcon } from "../utility/Common";
 
 export default function ResourceCard({
   item,
@@ -27,13 +28,8 @@ export default function ResourceCard({
         {isDefaultIcon ? (
           <MaterialCommunityIcons name="web-plus" size={48} color="green" />
         ) : (
-          <Image source={{ uri: item.icon }} style={styles.image} />
+          <Image source={{ uri: getIcon(item.icon) }} style={styles.image} />
         )}
-        {/* {strIcon.startsWith("http") ? (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        ) : (
-          <Image source={strIcon} style={styles.image} />
-        )} */}
         <Text style={styles.text}>{item.title}</Text>
         {/* <Text>{item.default_url}</Text>
         <Text>{item.description}</Text> */}

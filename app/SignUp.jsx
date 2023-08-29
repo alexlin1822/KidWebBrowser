@@ -9,13 +9,8 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
-import {
-  CheckUsernameisExist,
-  GenerateNewId,
-  GetStorageKey,
-  LoadData_local,
-  SaveData_local,
-} from "./utility/Common";
+import { GenerateNewId, GetStorageKey } from "./utility/Common";
+import { CheckAccountExist, SaveNewData } from "./utility/Store";
 
 import {
   InitNewAccountList_local,
@@ -50,13 +45,13 @@ export default function Signup() {
       return;
     }
 
-    // // Check if the user has entered a valid email address
+    // Check if the user has entered a valid email address
     // if (!text_email.includes("@")) {
     //   alert("Please enter a valid email address");
     //   return;
     // }
 
-    // // Check if the user has entered a valid password
+    // Check if the user has entered a valid password
     // if (text_password.length < 6) {
     //   alert("Password must be at least 6 characters long");
     //   return;
@@ -66,9 +61,10 @@ export default function Signup() {
     // await SaveData_local(GetStorageKey(), "");
 
     // Check if the user has entered a valid username and email address
-    let checkValue = await CheckUsernameisExist(text_username, text_email);
 
-    if (checkValue == 0) {
+    let checkValue = await CheckAccountExist(text_username, text_email);
+    //TODO: not finish
+    if (checkValue === "") {
       //add new account
       let value = await LoadData_local(GetStorageKey());
 
@@ -93,20 +89,24 @@ export default function Signup() {
         );
       }
 
-      //Save the account list to local storage
-      SaveData_local(GetStorageKey(), value);
+      //Save new account to accounts
+      SaveNewData(GetStorageKey(), value);
+
+      //Save new account profile to members
+      SaveNewData(GetStorageKey(), value);
+
+      value = InitAccountProfile(currentAccountID, text_nickname, text_email);
+      tmpAccountProfile = JSON.parse(value);
+      await SaveData_local(GetStorageKey(currentAccountID), value);
 
       alert("Account created successfully");
 
       //navigate to login page
       router.replace("/Login");
-    } else if (checkValue == 1) {
-      alert("Username already exists");
-      return;
-    } else if (checkValue == 2) {
-      alert("Email address already exists");
-      return;
+    } else {
+      alert(checkValue + " already exists");
     }
+    return;
   };
 
   return (

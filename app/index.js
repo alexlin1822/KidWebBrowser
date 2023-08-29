@@ -1,11 +1,15 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Switch, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { getIsRemote, setIsRemote } from "./utility/Common";
 
 export default function Page() {
+  const [remoteMode, setRemoteMode] = useState(getIsRemote());
+
   const handleStart = () => {
+    setIsRemote(remoteMode);
     router.replace("/Login");
   };
 
@@ -17,7 +21,7 @@ export default function Page() {
             style={styles.touchableOpacity}
             onPress={() => handleStart()}
           >
-            <Text style={styles.text}>Kid Web Browser</Text>
+            <Text style={styles.title_text}>Kid Web Browser</Text>
             <View style={styles.rowView}>
               <MaterialIcons
                 style={styles.icon}
@@ -54,6 +58,15 @@ export default function Page() {
           >
             <Text style={styles.buttonText}>Start Here</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.text}>Local</Text>
+          <Switch
+            style={{ marginTop: 50 }}
+            onValueChange={setRemoteMode}
+            value={remoteMode}
+          />
+          <Text style={styles.text}>Remote</Text>
         </View>
       </View>
     </SafeAreaProvider>
@@ -94,9 +107,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  text: {
+  title_text: {
     fontSize: 64,
     margin: 20,
+    fontWeight: "bold",
+    color: "orange",
+  },
+  text: {
+    fontSize: 30,
+    marginHorizontal: 10,
+    marginTop: 50,
     fontWeight: "bold",
     color: "orange",
   },

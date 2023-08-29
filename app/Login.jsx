@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import {
@@ -9,12 +9,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import {
-  GetAccountID,
-  SetCurrentID,
-  resetTotalTimeSpend,
-} from "./utility/Common";
-
+import { SetCurrentID, resetTotalTimeSpend } from "./utility/Common";
+import { LoadAccountData } from "./utility/Store";
 import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
 export default function Login() {
@@ -23,14 +19,22 @@ export default function Login() {
 
   const handleLogin = async () => {
     // Simulating a login check (you should replace this with your actual authentication logic)
-    let resultID = await GetAccountID(userName, password);
+    let result = await LoadAccountData(userName, password);
+    console.log(`Login - handleLogin : ${result}`);
 
-    if (resultID != "") {
-      SetCurrentID("currentAccountID", resultID);
+    if (result != "{}") {
+      let dict_result = JSON.parse(result);
+      console.log(`Login - handleLogin - dict_result : ` + typeof dict_result);
+      console.log(dict_result);
+      console.log(
+        `Login - handleLogin - dict_result.owner : ${dict_result.owner}`
+      );
+
+      SetCurrentID("currentAccountID", dict_result.owner);
       resetTotalTimeSpend();
       router.push({
         pathname: "/UserProfile",
-        params: { needLoad: true },
+        params: { needLoad: true, account_profile: result },
       });
     } else {
       alert("Invalid credentials. Please try again.");

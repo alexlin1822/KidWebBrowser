@@ -5,9 +5,10 @@ import {
   Text,
   StyleSheet,
   TextInput,
+  Image,
 } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { GenerateNewId } from "../utility/Common";
+import { GenerateNewId, getIcon } from "../utility/Common";
 
 export default function BrowserEditBar({
   resourceList,
@@ -59,7 +60,7 @@ export default function BrowserEditBar({
 
   const [timeLimit, setTimeLimit] = useState(resourceList.time_limit);
 
-  const [iconUrl, setIconUrl] = useState("");
+  const [iconUrl, setIconUrl] = useState(resourceList.icon);
 
   const handleSetValue = (type) => {
     if (type === "url_include") {
@@ -109,7 +110,7 @@ export default function BrowserEditBar({
       title: webTitle,
       description: description,
       default_url: defaultUrl,
-      icon: getIcon(defaultUrl),
+      icon: defaultUrl,
       memo: memo,
       status: resourceStatus,
       url_include: urlInclude,
@@ -127,17 +128,6 @@ export default function BrowserEditBar({
     onEditBarSubmit(newResourceList);
   };
 
-  /**
-   * Get the icon from the URL by using google favicon API
-   * @param {*} url
-   * @returns
-   */
-  const getIcon = (url) => {
-    let icon = "https://www.google.com/s2/favicons?domain=" + url + "&sz=48";
-    console.log("browser_edit_bar  getIcon - icon : ", icon);
-    return icon;
-  };
-
   const handleCancel = () => {
     onEditBarSubmit(null);
   };
@@ -146,6 +136,10 @@ export default function BrowserEditBar({
     setDefaultUrl(updateURL);
     setWebTitle(updateTitle);
     console.log(getIcon(updateURL));
+  };
+
+  const handleSetIcon = () => {
+    setIconUrl(defaultUrl);
   };
 
   return (
@@ -173,16 +167,30 @@ export default function BrowserEditBar({
         />
       </View>
       <View style={styles.rowView}>
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={handleSetIcon}
+        >
+          <Image source={{ uri: getIcon(iconUrl) }} style={styles.image} />
+        </TouchableOpacity>
+        <TextInput
+          style={[styles.textInput, { flex: 0.5 }]}
+          onChangeText={setIconUrl}
+          value={iconUrl}
+          placeholder="Please click the button to import the URL or type icon link here"
+        />
         <Text style={styles.text}> Description </Text>
         <TextInput
-          style={[styles.textInput, { flex: 0.45 }]}
+          style={[styles.textInput, { flex: 0.5 }]}
           onChangeText={setDescription}
           value={description}
           placeholder="Please type description here"
         />
-        <Text style={styles.text}> Memo</Text>
+      </View>
+      <View style={styles.rowView}>
+        <Text style={(styles.text, { marginHorizontal: 14 })}> Memo</Text>
         <TextInput
-          style={[styles.textInput, { flex: 0.5 }]}
+          style={[styles.textInput, { flex: 0.95 }]}
           onChangeText={setMemo}
           value={memo}
           placeholder="Please type memo here"
@@ -353,5 +361,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 2,
+  },
+  image: {
+    width: 36,
+    height: 36,
+    marginHorizontal: 18,
   },
 });
