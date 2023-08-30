@@ -18,27 +18,27 @@ import {
   CheckAccountExist_local,
 } from "./LocalStore";
 
-export async function SaveNewData(keyname, content) {
+export async function SaveNewData(type, storage_keyname, content) {
   if (getIsRemote()) {
-    return await SaveNewData_remote(keyname, content);
+    return await SaveNewData_remote(type, storage_keyname, content);
   } else {
-    return await SaveNewData_local(keyname, content);
+    return await SaveNewData_local(type, storage_keyname, content);
   }
 }
 
-export async function SaveUpdateData(keyname, content) {
+export async function SaveUpdateData(type, storage_keyname, content) {
   if (getIsRemote()) {
-    return await SaveUpdateData_remote(keyname, content);
+    return await SaveUpdateData_remote(type, storage_keyname, content);
   } else {
-    return await SaveUpdateData_local(keyname, content);
+    return await SaveUpdateData_local(type, storage_keyname, content);
   }
 }
 
-export async function deleteData(keyname, content) {
+export async function deleteData(type, storage_keyname, content) {
   if (getIsRemote()) {
-    return await deleteData_remote(keyname, content);
+    return await deleteData_remote(type, storage_keyname, content);
   } else {
-    return await deleteData_local(keyname, content);
+    return await deleteData_local(type, storage_keyname, content);
   }
 }
 
@@ -58,10 +58,18 @@ export async function LoadAccountData(username, password) {
   }
 }
 
-export async function LoadData(datatype, keyname) {
+// export async function LoadData(datatype, storage_keyname) {
+//   if (getIsRemote()) {
+//     return await LoadData_remote(datatype, storage_keyname);
+//   } else {
+//     return await LoadData_local(datatype, storage_keyname);
+//   }
+// }
+
+export async function LoadData(datatype, storage_keyname) {
   if (getIsRemote()) {
-    return await LoadData_remote(datatype, keyname);
+    return await LoadData_remote(datatype, storage_keyname);
   } else {
-    return await LoadData_local(datatype, keyname);
+    return await LoadData_local(datatype, storage_keyname);
   }
 }

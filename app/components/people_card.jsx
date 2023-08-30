@@ -8,10 +8,10 @@ export default function PeopleCard({
   const strIcon = item.icon.toString();
   let isDefaultIcon = item.key === "0" ? true : false;
 
-  console.log("People card here" + JSON.stringify(item));
+  // console.log("People card here" + JSON.stringify(item));
 
   const handleClick = () => {
-    console.log("People card Clicked: " + JSON.stringify(item));
+    // console.log("People card Clicked: " + JSON.stringify(item));
     onSubmitResource(item);
   };
 
@@ -26,12 +26,7 @@ export default function PeopleCard({
         onPress={handleClick}
         onLongPress={handleLongClick}
       >
-        {/* {isDefaultIcon ? (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        ) : (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        )} */}
-        <Image source={{ uri: item.icon }} style={styles.image} />
+        <Image source={{ uri: item.icon }} style={styles.people_image} />
         <Text style={styles.text}>{item.title}</Text>
         <Text style={{ color: "blue" }}>{item.description}</Text>
       </TouchableOpacity>
@@ -59,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 3,
     margin: 3,
   },
-  image: {
+  people_image: {
     width: 128,
     height: 128,
     resizeMode: "stretch",

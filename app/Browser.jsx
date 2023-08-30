@@ -8,12 +8,18 @@ import { router, useLocalSearchParams } from "expo-router";
 import {
   GetCurrentID,
   SetCurrentID,
-  LoadData_local,
-  SaveData_local,
   GetStorageKey,
   AddOneTotalTimeSpend,
   getTotalTimeSpend,
 } from "./utility/Common";
+
+import {
+  SaveNewData,
+  SaveUpdateData,
+  LoadData,
+  deleteData,
+} from "./utility/Store";
+
 import BrowserViewBar from "./components/browser_view_bar";
 import SearchBar from "./components/search_bar";
 import BrowserEditBar from "./components/browser_edit_bar";
@@ -77,7 +83,7 @@ export default function Browser() {
       console.log("Browser - handleEditSubmit: Cancel button");
       SetCurrentID("currentResourceID", "");
       router.push({
-        pathname: "/Home",
+        pathname: "/ResourcesList",
         params: { needLoad: false },
       });
       return;
@@ -87,75 +93,78 @@ export default function Browser() {
     if (currentResourceID === "0") {
       //Add new records
       result = await SaveNewData(
+        "resources",
         GetStorageKey(currentAccountID, focusMemberID),
-        newResourceProfile
+        JSON.stringify(newResourceProfile)
       );
     } else {
       result = await SaveUpdateData(
+        "resources",
         GetStorageKey(currentAccountID, focusMemberID),
-        newResourceProfile
+        JSON.stringify(newResourceProfile)
       );
     }
 
     // Clicked submit button
     // Save resource profile to local storage
-    console.log("Browser handleEditSubmit: NewResourceList: ");
-    console.log(newResourceProfile);
+    // console.log("Browser handleEditSubmit: NewResourceList: ");
+    // console.log(newResourceProfile);
 
-    let value = await LoadData_local(
-      GetStorageKey(currentAccountID, focusMemberID)
-    );
+    // let value = await LoadData(
+    //   "resources",
+    //   GetStorageKey(currentAccountID, focusMemberID)
+    // );
 
-    if (value !== "") {
-      let tmpMemberProfile = JSON.parse(value);
+    // if (value !== "") {
+    //   let tmpMemberProfile = JSON.parse(value);
 
-      let keyToUpdate = newResourceProfile.rid;
-      const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-        if (item.rid === keyToUpdate) {
-          // Update the desired key's value here
-          return {
-            ...item,
-            // rid:   //rid is not changed
-            title: newResourceProfile.title,
-            description: newResourceProfile.description,
-            default_url: newResourceProfile.default_url,
-            icon: newResourceProfile.icon,
-            memo: newResourceProfile.memo,
-            status: newResourceProfile.status,
-            url_include: newResourceProfile.url_include,
-            title_include: newResourceProfile.title_include,
-            whitelist: newResourceProfile.whitelist,
-            use_url_include: newResourceProfile.use_url_include,
-            use_title_include: newResourceProfile.use_title_include,
-            use_whitelist: newResourceProfile.use_whitelist,
-            last_url: newResourceProfile.default_url,
-            time_limit: newResourceProfile.time_limit,
-          };
-        }
-        return item;
-      });
+    //   let keyToUpdate = newResourceProfile.rid;
+    //   const updatedData = tmpMemberProfile.resourcelist.map((item) => {
+    //     if (item.rid === keyToUpdate) {
+    //       // Update the desired key's value here
+    //       return {
+    //         ...item,
+    //         // rid:   //rid is not changed
+    //         title: newResourceProfile.title,
+    //         description: newResourceProfile.description,
+    //         default_url: newResourceProfile.default_url,
+    //         icon: newResourceProfile.icon,
+    //         memo: newResourceProfile.memo,
+    //         status: newResourceProfile.status,
+    //         url_include: newResourceProfile.url_include,
+    //         title_include: newResourceProfile.title_include,
+    //         whitelist: newResourceProfile.whitelist,
+    //         use_url_include: newResourceProfile.use_url_include,
+    //         use_title_include: newResourceProfile.use_title_include,
+    //         use_whitelist: newResourceProfile.use_whitelist,
+    //         last_url: newResourceProfile.default_url,
+    //         time_limit: newResourceProfile.time_limit,
+    //       };
+    //     }
+    //     return item;
+    //   });
 
-      if (currentResourceID === "0") {
-        //Add new records
-        tmpMemberProfile.resourcelist.push(newResourceProfile);
-      } else {
-        tmpMemberProfile.resourcelist = updatedData;
-      }
-      value = JSON.stringify(tmpMemberProfile);
+    //   if (currentResourceID === "0") {
+    //     //Add new records
+    //     tmpMemberProfile.resourcelist.push(newResourceProfile);
+    //   } else {
+    //     tmpMemberProfile.resourcelist = updatedData;
+    //   }
+    //   value = JSON.stringify(tmpMemberProfile);
 
-      console.log("Browser handleEditSubmit: [value] to save ");
-      console.log(value);
+    //   console.log("Browser handleEditSubmit: [value] to save ");
+    //   console.log(value);
 
-      await SaveData_local(
-        GetStorageKey(currentAccountID, focusMemberID),
-        value
-      );
-    }
+    //   await SaveData_local(
+    //     GetStorageKey(currentAccountID, focusMemberID),
+    //     value
+    //   );
+    // }
 
     SetCurrentID("currentResourceID", "");
 
     router.push({
-      pathname: "/Home",
+      pathname: "/ResourcesList",
       params: { needLoad: true },
     });
   };
@@ -182,7 +191,7 @@ export default function Browser() {
       SetCurrentID("currentResourceID", "");
       console.log("Browser - Exit: " + currentResourceID);
       router.push({
-        pathname: "/Home",
+        pathname: "/ResourcesList",
         params: { needLoad: false },
       });
     } else if (type === "Hide") {
@@ -197,37 +206,46 @@ export default function Browser() {
    */
   const updateLastURL = async (myfocusMemberID, newURL) => {
     console.log("Browser - updateLastURL: " + myfocusMemberID + "  " + newURL);
-    let value = await LoadData_local(
-      GetStorageKey(currentAccountID, myfocusMemberID)
+    let newResourceProfile = resourceProfile;
+    newResourceProfile.last_url = newURL;
+    await SaveUpdateData(
+      "resources",
+      GetStorageKey(currentAccountID, myfocusMemberID),
+      JSON.stringify(newResourceProfile)
     );
 
-    if (value !== "") {
-      let tmpMemberProfile = JSON.parse(value);
+    // let value = await LoadData(
+    //   "resources",
+    //   GetStorageKey(currentAccountID, myfocusMemberID)
+    // );
 
-      let keyToUpdate = currentResourceID;
-      const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-        if (item.rid === keyToUpdate) {
-          // Update the desired key's value here
-          return {
-            ...item,
-            // rid:   //rid is not changed
-            last_url: newURL,
-          };
-        }
-        return item;
-      });
+    // if (value !== "") {
+    //   let tmpMemberProfile = JSON.parse(value);
 
-      tmpMemberProfile.resourcelist = updatedData;
-      value = JSON.stringify(tmpMemberProfile);
+    //   let keyToUpdate = currentResourceID;
+    //   const updatedData = tmpMemberProfile.resourcelist.map((item) => {
+    //     if (item.rid === keyToUpdate) {
+    //       // Update the desired key's value here
+    //       return {
+    //         ...item,
+    //         // rid:   //rid is not changed
+    //         last_url: newURL,
+    //       };
+    //     }
+    //     return item;
+    //   });
 
-      console.log("Browser updateLastURL: [value] to save ");
-      console.log(value);
+    //   tmpMemberProfile.resourcelist = updatedData;
+    //   value = JSON.stringify(tmpMemberProfile);
 
-      await SaveData_local(
-        GetStorageKey(currentAccountID, myfocusMemberID),
-        value
-      );
-    }
+    //   console.log("Browser updateLastURL: [value] to save ");
+    //   console.log(value);
+
+    //   await SaveData_local(
+    //     GetStorageKey(currentAccountID, myfocusMemberID),
+    //     value
+    //   );
+    // }
   };
 
   const handleUrlChange = (newNavState) => {

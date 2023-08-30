@@ -8,17 +8,19 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
+import { GetCurrentID, SetCurrentID, GetStorageKey } from "./utility/Common";
+import { styleSheetCustom } from "./utility/styles";
 import {
-  GetCurrentID,
-  SetCurrentID,
-  LoadData_local,
-  SaveData_local,
-  GetStorageKey,
-} from "./utility/Common";
+  SaveNewData,
+  SaveUpdateData,
+  LoadData,
+  deleteData,
+} from "./utility/Store";
+
 import { InitResourceProfile } from "./utility/DataStructure";
 import ResourceCard from "./components/resource_card";
 
-export default function Home() {
+export default function ResourcesList() {
   const params = useLocalSearchParams();
   const { needLoad } = params;
 
@@ -31,7 +33,7 @@ export default function Home() {
   // ResourceCard click event
   const clickResourceCard = (item, isEditMode) => {
     if (isLoading) return;
-    console.log("Home click check point");
+    console.log("ResourcesList click check point");
 
     SetCurrentID("currentResourceID", item.rid);
 
@@ -45,31 +47,35 @@ export default function Home() {
         whatMode: whatIsMode.toString(),
       },
     });
-
-    // navigation.navigate("Browser", {
-    //   item: item,
-    //   isEditMode: item.rid === "0" ? true : isEditMode,
-    // });
   };
 
-  const clickLogout = () => {
+  const clickLogout = async () => {
+    SetCurrentID("focusMemberID", "");
+
+    let str_member = await LoadData(
+      "accounts",
+      GetStorageKey(currentAccountID)
+    );
+
     router.push({
-      pathname: "/UserProfile",
-      params: { needLoad: true },
+      pathname: "/MembersList",
+      params: { account_profile: str_member },
     });
   };
 
   useEffect(() => {
     async function fetchData() {
       // For test clear this account profile
-      // await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
+      // await SaveNewData("member_profile", GetStorageKey(currentAccountID, focusMemberID), "");
 
       try {
         // Pre-load
-        let value = await LoadData_local(
+        let value = await LoadData(
+          "member_profile",
           GetStorageKey(currentAccountID, focusMemberID)
         );
 
+        console.log("ResourcesList  - fetchData(): " + value);
         let tmpMemberProfile = {};
 
         if (value !== "") {
@@ -77,14 +83,15 @@ export default function Home() {
         } else {
           value = InitResourceProfile(focusMemberID);
           tmpMemberProfile = JSON.parse(value);
-          await SaveData_local(
+          await SaveNewData(
+            "member_profile",
             GetStorageKey(currentAccountID, focusMemberID),
             value
           );
         }
         setResourceList(tmpMemberProfile);
         console.log(
-          "UserProfile Fetch Data: " + JSON.stringify(tmpMemberProfile)
+          "MembersList Fetch Data: " + JSON.stringify(tmpMemberProfile)
         );
       } catch (e) {
         console.warn(e);

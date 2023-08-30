@@ -3,7 +3,6 @@
  * Global variables for all pages and components
  * Save and load data in Storage
  */
-import * as SecureStore from "expo-secure-store";
 import * as Crypto from "expo-crypto";
 
 /* Global variables */
@@ -131,34 +130,34 @@ export function SetCurrentID(keyname, content) {
  * @param {*} currentID
  * @returns : Boolean
  */
-async function LoadCurrentData(currentID) {
-  try {
-    console.log("Common - LoadCurrentData");
+// async function LoadCurrentData(currentID) {
+//   try {
+//     console.log("Common - LoadCurrentData");
 
-    currentAccountID = currentID;
-    currentUserProfileSetting = await SecureStore.getItemAsync(
-      `${appName}:currentUserProfileSetting`
-    );
-    currentUserData = await SecureStore.getItemAsync(
-      `${appName}:currentUserData`
-    );
+//     currentAccountID = currentID;
+//     currentMembersListSetting = await SecureStore.getItemAsync(
+//       `${appName}:currentMembersListSetting`
+//     );
+//     currentUserData = await SecureStore.getItemAsync(
+//       `${appName}:currentUserData`
+//     );
 
-    if (currentAccountID === null) {
-      currentAccountID = "";
-    }
-    if (currentUserData === null) {
-      currentUserData = "";
-    }
-    return true;
-  } catch (error) {
-    currentAccountID = "";
-    currentUserProfileSetting = "";
-    currentUserData = "";
-    console.log("Common - LoadCurrentData Error:");
-    console.log(error);
-    return false;
-  }
-}
+//     if (currentAccountID === null) {
+//       currentAccountID = "";
+//     }
+//     if (currentUserData === null) {
+//       currentUserData = "";
+//     }
+//     return true;
+//   } catch (error) {
+//     currentAccountID = "";
+//     currentMembersListSetting = "";
+//     currentUserData = "";
+//     console.log("Common - LoadCurrentData Error:");
+//     console.log(error);
+//     return false;
+//   }
+// }
 
 /**
  * Get the icon from the URL by using google favicon API

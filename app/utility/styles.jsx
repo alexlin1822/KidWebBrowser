@@ -47,4 +47,9 @@ export const styleSheetCustom = {
     fontWeight: "bold",
     color: "white",
   },
+  people_image: {
+    width: 128,
+    height: 128,
+    resizeMode: "stretch",
+  },
 };

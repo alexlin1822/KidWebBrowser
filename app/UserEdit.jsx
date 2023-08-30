@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "react-native-image-picker";
+import { AntDesign } from "@expo/vector-icons";
 
 import {
   View,
@@ -15,16 +14,21 @@ import {
 import {
   GetCurrentID,
   SetCurrentID,
-  LoadData_local,
-  SaveData_local,
   GetStorageKey,
   GenerateNewId,
 } from "./utility/Common";
 import { styleSheetCustom } from "./utility/styles";
+import {
+  SaveNewData,
+  SaveUpdateData,
+  LoadData,
+  deleteData,
+} from "./utility/Store";
 
 export default function UserEdit() {
   const params = useLocalSearchParams();
   const { passItem } = params;
+
   console.log("UserEdit item: " + passItem);
   let item = JSON.parse(passItem);
 
@@ -41,23 +45,22 @@ export default function UserEdit() {
   const [memo, setMemo] = useState(focusMemberID === "0" ? "" : item.memo);
   const [status, setStatus] = useState(item.status);
 
-  const Item = Picker.Item;
-  const [valuePick, setValuePick] = useState("key1");
+  //Go back to UserEdit Page
+  const jumpToUserEdit = async () => {
+    SetCurrentID("focusMemberID", "");
 
-  const [response, setResponse] = React.useState(null);
-
-  // const onButtonPress = React.useCallback((type, options) => {
-  //   if (type === "capture") {
-  //     ImagePicker.launchCamera(options, setResponse);
-  //   } else {
-  //     ImagePicker.launchImageLibrary(options, setResponse);
-  //   }
-  // }, []);
+    let str_member = await LoadData(
+      "accounts",
+      GetStorageKey(currentAccountID)
+    );
+    router.push({
+      pathname: "/MembersList",
+      params: { account_profile: str_member },
+    });
+  };
 
   // PeopleCard click event
   const handleSubmit = async () => {
-    console.log("handleSubmit");
-
     if (title === "") {
       alert("Please fill in the name");
       return;
@@ -72,82 +75,104 @@ export default function UserEdit() {
       status: status,
     };
 
-    // Clicked submit button
-    // Save resource profile to local storage
-    let value = await LoadData_local(GetStorageKey(currentAccountID));
-
-    if (value !== "") {
-      let tmpMemberProfile = JSON.parse(value);
-      console.log("item_AAA", tmpMemberProfile);
-
-      if (focusMemberID === "0") {
-        //Add new records
-        tmpMemberProfile.memberlist.push(newPersionProfile);
-      } else {
-        //update existing records
-        let keyToUpdate = newPersionProfile.key;
-
-        const updatedData = tmpMemberProfile.memberlist.map((item) => {
-          if (item.key === keyToUpdate) {
-            console.log("item_HHH", item);
-            // Update the desired key's value here
-            return {
-              ...item,
-              //   key:
-              title: newPersionProfile.title,
-              description: newPersionProfile.description,
-              icon: newPersionProfile.icon,
-              memo: newPersionProfile.memo,
-              status: newPersionProfile.status,
-            };
-          }
-          return item;
-        });
-        tmpMemberProfile.memberlist = updatedData;
-      }
-
-      value = JSON.stringify(tmpMemberProfile);
-      console.log("value_HHH", value);
-      await SaveData_local(GetStorageKey(currentAccountID), value);
+    if (focusMemberID === "0") {
+      await SaveNewData(
+        "members",
+        GetStorageKey(currentAccountID),
+        JSON.stringify(newPersionProfile)
+      );
+    } else {
+      await SaveUpdateData(
+        "members",
+        GetStorageKey(currentAccountID),
+        JSON.stringify(newPersionProfile)
+      );
     }
-
-    SetCurrentID("focusMemberID", "");
-    router.push({
-      pathname: "/UserProfile",
-      params: { needLoad: true },
-    });
+    await jumpToUserEdit();
   };
 
-  const handleCancel = () => {
-    SetCurrentID("focusMemberID", "");
-    router.push({
-      pathname: "/UserProfile",
-      params: { needLoad: false },
-    });
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete This Member",
+      "Deleted member can not recover! Are you sure?",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            // Handle the "Yes" button press here
+            if (focusMemberID != "0") {
+              await deleteData("members", focusMemberID);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+
+    await jumpToUserEdit();
+  };
+
+  const handleCancel = async () => {
+    await jumpToUserEdit();
+  };
+
+  const handImageChange = (which) => {
+    console.log("UserEdit - handleSubmit " + which);
+    const parts = icon.split("/");
+    const oldPngName = parts[parts.length - 1];
+    let imageNumber = parseInt(oldPngName.split(".")[0]);
+
+    if (which === "Left") {
+      if (imageNumber <= 1) {
+        imageNumber = 10;
+      } else {
+        imageNumber--;
+      }
+      console.log("UserEdit - handleSubmit Left");
+    } else if (which === "Right") {
+      if (imageNumber >= 10) {
+        imageNumber = 1;
+      } else {
+        imageNumber++;
+      }
+      console.log("UserEdit - handleSubmit Right");
+    }
+
+    let newPngName = imageNumber.toString() + ".png";
+    let newUrl = icon.replace(oldPngName, newPngName);
+    setIcon(newUrl);
   };
 
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        {/* <View style={styles.rowView}>
-          <Picker
-            style={styles.picker}
-            testID="basic-picker"
-            selectedValue={valuePick}
-            onValueChange={(v) => setValuePick(v)}
-            accessibilityLabel="Basic Picker Accessibility Label"
-          >
-            <Item label="hello" value="key0">
-              <Image
-                source={require("./assets/1.png")}
-                style={{ width: 24, height: 24 }}
-              />
-            </Item>
-            <Item label="world" value="key1" />
-          </Picker>
-        </View> */}
         <View style={styles.rowView}>
-          <Text style={styles.text}>Name</Text>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              { flex: 0.1, height: 64, marginHorizontal: 50 },
+            ]}
+            onPress={() => handImageChange("Left")}
+          >
+            <AntDesign name="caretleft" size={36} color="black" />
+          </TouchableOpacity>
+          <Image source={{ uri: icon }} style={styles.people_image} />
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              { flex: 0.1, height: 64, marginHorizontal: 50 },
+            ]}
+            onPress={() => handImageChange("Right")}
+          >
+            <AntDesign name="caretright" size={36} color="black" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.rowView}>
+          <Text style={[styles.text, { width: 75 }]}>Name</Text>
           <TextInput
             style={styles.textInput}
             onChangeText={setTitle}
@@ -156,7 +181,7 @@ export default function UserEdit() {
           />
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.text}>Description</Text>
+          <Text style={[styles.text, { width: 75 }]}>Description</Text>
           <TextInput
             style={styles.textInput}
             onChangeText={setDescription}
@@ -165,16 +190,7 @@ export default function UserEdit() {
           />
         </View>
         <View style={styles.rowView}>
-          <Text style={styles.text}>Icon</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={setIcon}
-            value={icon}
-            placeholder="Plesae type the icon here. "
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.text}>Memo</Text>
+          <Text style={[styles.text, { width: 75 }]}>Memo</Text>
           <TextInput
             style={styles.textInput}
             onChangeText={setMemo}
@@ -196,82 +212,17 @@ export default function UserEdit() {
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </View>
+        <View style={[styles.rowView, { position: "absolute", bottom: 10 }]}>
+          <TouchableOpacity
+            style={[styles.submitButton, { marginHorizontal: 50 }]}
+            onPress={() => handleDelete()}
+          >
+            <Text style={styles.buttonText}> Delete This Member</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create(styleSheetCustom);
-
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 10,
-//     marginTop: 30,
-//     margin: 10,
-//     flex: 1,
-//   },
-//   rowView: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     padding: 5,
-//     margin: 10,
-//   },
-//   submitButton: {
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginHorizontal: 100,
-//     paddingHorizontal: 10,
-//     backgroundColor: "blue",
-//     borderRadius: 5,
-//     height: 50,
-//     flex: 0.5,
-//   },
-//   buttonText: {
-//     fontSize: 18,
-//     fontWeight: "bold",
-//     color: "white",
-//   },
-//   text: {
-//     fontSize: 12,
-//     fontWeight: "bold",
-//     marginLeft: 10,
-//   },
-//   optionButton: {
-//     alignItems: "center",
-//     justifyContent: "center",
-//     width: 120,
-//     backgroundColor: "grey",
-//     padding: 10,
-//     marginHorizontal: 5,
-//     marginVertical: 2,
-//     borderRadius: 5,
-//   },
-//   optionButtonSelected: {
-//     backgroundColor: "green",
-//   },
-//   optionText: {
-//     color: "white",
-//     fontSize: 16,
-//   },
-//   selectedOptionsText: {
-//     marginTop: 20,
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-//   textInput: {
-//     flex: 1,
-//     fontSize: 16,
-//     marginLeft: 2,
-//     paddingLeft: 10,
-//     height: 36,
-//     borderColor: "gray",
-//     borderWidth: 1,
-//   },
-//   picker: {
-//     flex: 0.5,
-//     width: 300,
-//     height: 100,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });

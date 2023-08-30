@@ -12,10 +12,7 @@ import { router } from "expo-router";
 import { GenerateNewId, GetStorageKey } from "./utility/Common";
 import { CheckAccountExist, SaveNewData } from "./utility/Store";
 
-import {
-  InitNewAccountList_local,
-  AddNewAccount,
-} from "./utility/DataStructure";
+import { InitAccountProfile, AddNewAccount } from "./utility/DataStructure";
 
 import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
@@ -63,42 +60,32 @@ export default function Signup() {
     // Check if the user has entered a valid username and email address
 
     let checkValue = await CheckAccountExist(text_username, text_email);
-    //TODO: not finish
+    //TODO: need test
     if (checkValue === "") {
       //add new account
-      let value = await LoadData_local(GetStorageKey());
-
-      if (value != "" && value != null) {
-        let myAccount = AddNewAccount(
-          GenerateNewId("account"),
-          text_nickname,
-          text_username,
-          text_email,
-          text_password
-        );
-        let blocks = JSON.parse(value);
-        blocks.push(myAccount);
-        value = JSON.stringify(blocks);
-      } else {
-        value = InitNewAccountList_local(
-          GenerateNewId("account"),
-          text_nickname,
-          text_username,
-          text_email,
-          text_password
-        );
-      }
+      let newID = GenerateNewId("account");
+      let myAccount = AddNewAccount(
+        newID,
+        text_nickname,
+        text_username,
+        text_email,
+        text_password
+      );
 
       //Save new account to accounts
-      SaveNewData(GetStorageKey(), value);
+      SaveNewData("accounts", GetStorageKey(), JSON.stringify(myAccount));
 
       //Save new account profile to members
-      SaveNewData(GetStorageKey(), value);
+      let myAccountProfile = InitAccountProfile(
+        newID,
+        text_nickname,
+        text_email
+      );
 
-      value = InitAccountProfile(currentAccountID, text_nickname, text_email);
-      tmpAccountProfile = JSON.parse(value);
-      await SaveData_local(GetStorageKey(currentAccountID), value);
-
+      SaveNewData("account_profile", GetStorageKey(newID), myAccountProfile);
+      console.log(
+        `SaveNewData - members : ${GetStorageKey(newID)} : ${myAccountProfile}`
+      );
       alert("Account created successfully");
 
       //navigate to login page

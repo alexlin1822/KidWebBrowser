@@ -8,32 +8,29 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  ScrollView,
 } from "react-native";
-import {
-  GetCurrentID,
-  SetCurrentID,
-  LoadData_local,
-  SaveData_local,
-  GetStorageKey,
-} from "./utility/Common";
-import { InitAccountProfile } from "./utility/DataStructure";
+import { GetCurrentID, SetCurrentID } from "./utility/Common";
 
 import PeopleCard from "./components/people_card";
 
-export default function UserProfile() {
+export default function MembersList() {
   const params = useLocalSearchParams();
-  const { needLoad, account_profile } = params;
+  const { account_profile } = params;
 
   const [isLoading, setIsLoading] = useState(false);
   const [dictAccountProfile, setDictMyAccountProfile] = useState(
     JSON.parse(account_profile)
   );
 
-  const currentAccountID = GetCurrentID("currentAccountID");
+  // console.log("MembersList - account_profile: " + account_profile);
+  // console.log(dictAccountProfile);
+
+  // const currentAccountID = GetCurrentID("currentAccountID");
 
   // PeopleCard click event
   const clickPeopleCard = (item, isLongPress) => {
-    console.log("UserProfile - clickPeopleCard: ");
+    console.log("MembersList - clickPeopleCard: ");
     console.log(item);
     console.log(isLongPress);
 
@@ -46,7 +43,7 @@ export default function UserProfile() {
       });
     } else {
       router.push({
-        pathname: "/Home",
+        pathname: "/ResourcesList",
         params: { needLoad: true },
       });
     }
@@ -64,7 +61,7 @@ export default function UserProfile() {
   //     try {
   // JSON.loads(result);
   // setMyAccountProfile(account_profile); // // Load account profile
-  // console.log("UserProfile  - fetchData(): " + result);
+  // console.log("MembersList  - fetchData(): " + result);
   // // Pre-load
   // let value = await LoadData_local(GetStorageKey(currentAccountID));
   // let tmpAccountProfile = {};
@@ -77,7 +74,7 @@ export default function UserProfile() {
   // }
   // setMyAccountProfile(tmpAccountProfile);
   // console.log(
-  //   "UserProfile  - fetchData(): " + JSON.stringify(tmpAccountProfile)
+  //   "MembersList  - fetchData(): " + JSON.stringify(tmpAccountProfile)
   // );
   //     } catch (e) {
   //       console.warn(e);
@@ -90,7 +87,7 @@ export default function UserProfile() {
   //   fetchData();
   // }, []);
 
-  console.log("UserProfile - myAccountProfile: ");
+  console.log("MembersList - myAccountProfile: ");
   console.log(dictAccountProfile);
 
   if (isLoading) {
@@ -98,7 +95,7 @@ export default function UserProfile() {
   } else {
     return (
       <SafeAreaProvider>
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
           <View style={styles.rowView}>
             <TouchableOpacity
               style={styles.submitButton}
@@ -113,16 +110,19 @@ export default function UserProfile() {
             </Text>
           </View>
           <View style={styles.rowView}>
-            {dictAccountProfile.memberlist.map((item) => (
-              <PeopleCard
-                key={item.key}
-                item={item}
-                onSubmitResource={() => clickPeopleCard(item, false)}
-                onSubmitLongResource={() => clickPeopleCard(item, true)}
-              />
-            ))}
+            {dictAccountProfile.memberlist.map(
+              (item) =>
+                item.status === "0" && (
+                  <PeopleCard
+                    key={item.key}
+                    item={item}
+                    onSubmitResource={() => clickPeopleCard(item, false)}
+                    onSubmitLongResource={() => clickPeopleCard(item, true)}
+                  />
+                )
+            )}
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaProvider>
     );
   }

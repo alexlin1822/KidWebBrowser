@@ -3,32 +3,9 @@
  *               account profile, and resource profile.
  *
  */
-// #### Account List object ####
-export function InitNewAccountList_local(
-  accountID,
-  text_nickname,
-  text_username,
-  text_email,
-  text_password
-) {
-  //db:kwb
-  //collection: accounts
-  let myAccountList = [];
-  myAccountList.push(
-    AddNewAccount(
-      accountID,
-      text_nickname,
-      text_username,
-      text_email,
-      text_password
-    )
-  );
-  return JSON.stringify(myAccountList);
-}
 
-// #### Add a new account object ####
 /**
- *
+ * Add a new account object
  * @param {*} accountID
  * @param {*} text_nickname
  * @param {*} text_username
@@ -49,11 +26,18 @@ export function AddNewAccount(
     username: text_username,
     email: text_email,
     password: text_password,
+    status: "0",
   };
   return myAccount;
 }
 
-// #### Account profile object ####
+/**
+ * Account profile object
+ * @param {*} accountID
+ * @param {*} text_nickname
+ * @param {*} text_email
+ * @returns String
+ */
 export function InitAccountProfile(accountID, text_nickname, text_email) {
   //db:kwb
   //collection: members
@@ -61,7 +45,6 @@ export function InitAccountProfile(accountID, text_nickname, text_email) {
   const myAccountProfile = {
     owner: accountID,
     nickname: text_nickname,
-    username: text_username,
     email: text_email,
     profile: {
       setting1: "aa",

@@ -24,8 +24,6 @@ export default function Login() {
 
     if (result != "{}") {
       let dict_result = JSON.parse(result);
-      console.log(`Login - handleLogin - dict_result : ` + typeof dict_result);
-      console.log(dict_result);
       console.log(
         `Login - handleLogin - dict_result.owner : ${dict_result.owner}`
       );
@@ -33,8 +31,8 @@ export default function Login() {
       SetCurrentID("currentAccountID", dict_result.owner);
       resetTotalTimeSpend();
       router.push({
-        pathname: "/UserProfile",
-        params: { needLoad: true, account_profile: result },
+        pathname: "/MembersList",
+        params: { account_profile: result },
       });
     } else {
       alert("Invalid credentials. Please try again.");
