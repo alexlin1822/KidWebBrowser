@@ -44,44 +44,42 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <Text>User Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={userName}
-            onChangeText={setuserName}
-            autoCapitalize="none"
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Password</Text>
-          <TextInput
-            style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
+    <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>User Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={userName}
+          onChangeText={setuserName}
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleLogin()}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleLogin()}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignUp()}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignUp()}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );

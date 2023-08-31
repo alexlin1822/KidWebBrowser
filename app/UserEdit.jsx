@@ -10,6 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import {
   GetCurrentID,
@@ -92,7 +93,7 @@ export default function UserEdit() {
   };
 
   const handleDelete = async () => {
-    Alert.alert(
+    await Alert.alert(
       "Delete This Member",
       "Deleted member can not recover! Are you sure?",
       [
@@ -105,15 +106,34 @@ export default function UserEdit() {
           onPress: async () => {
             // Handle the "Yes" button press here
             if (focusMemberID != "0") {
-              await deleteData("members", focusMemberID);
+              try {
+                console.log("UserEdit - handleDelete - deleteData - start1");
+                await deleteData(
+                  "members",
+                  GetStorageKey(currentAccountID),
+                  focusMemberID
+                );
+                console.log("UserEdit - handleDelete - deleteData - start2");
+                await deleteData(
+                  "account_profile",
+                  GetStorageKey(currentAccountID, focusMemberID),
+                  ""
+                );
+                alert("Member has been deleted!");
+
+                await jumpToUserEdit();
+              } catch (e) {
+                console.log(
+                  "UserEdit - handleDelete - deleteData - transactions - error: " +
+                    e
+                );
+              }
             }
           },
         },
       ],
       { cancelable: false }
     );
-
-    await jumpToUserEdit();
   };
 
   const handleCancel = async () => {
@@ -148,78 +168,76 @@ export default function UserEdit() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              { flex: 0.1, height: 64, marginHorizontal: 50 },
-            ]}
-            onPress={() => handImageChange("Left")}
-          >
-            <AntDesign name="caretleft" size={36} color="black" />
-          </TouchableOpacity>
-          <Image source={{ uri: icon }} style={styles.people_image} />
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              { flex: 0.1, height: 64, marginHorizontal: 50 },
-            ]}
-            onPress={() => handImageChange("Right")}
-          >
-            <AntDesign name="caretright" size={36} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rowView}>
-          <Text style={[styles.text, { width: 75 }]}>Name</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={setTitle}
-            value={title}
-            placeholder="Plesae type the name here. "
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={[styles.text, { width: 75 }]}>Description</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={setDescription}
-            value={description}
-            placeholder="Plesae type the description here. "
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text style={[styles.text, { width: 75 }]}>Memo</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={setMemo}
-            value={memo}
-            placeholder="Plesae type the memo here. "
-          />
-        </View>
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={[styles.submitButton, { marginHorizontal: 50 }]}
-            onPress={() => handleCancel()}
-          >
-            <Text style={styles.buttonText}> Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.submitButton, { marginHorizontal: 50 }]}
-            onPress={() => handleSubmit()}
-          >
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.rowView, { position: "absolute", bottom: 10 }]}>
-          <TouchableOpacity
-            style={[styles.submitButton, { marginHorizontal: 50 }]}
-            onPress={() => handleDelete()}
-          >
-            <Text style={styles.buttonText}> Delete This Member</Text>
-          </TouchableOpacity>
-        </View>
+    <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={[
+            styles.submitButton,
+            { flex: 0.1, height: 64, marginHorizontal: 50 },
+          ]}
+          onPress={() => handImageChange("Left")}
+        >
+          <AntDesign name="caretleft" size={36} color="black" />
+        </TouchableOpacity>
+        <Image source={{ uri: icon }} style={styles.people_image} />
+        <TouchableOpacity
+          style={[
+            styles.submitButton,
+            { flex: 0.1, height: 64, marginHorizontal: 50 },
+          ]}
+          onPress={() => handImageChange("Right")}
+        >
+          <AntDesign name="caretright" size={36} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.rowView}>
+        <Text style={[styles.text, { width: 75 }]}>Name</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setTitle}
+          value={title}
+          placeholder="Plesae type the name here. "
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={[styles.text, { width: 75 }]}>Description</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setDescription}
+          value={description}
+          placeholder="Plesae type the description here. "
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={[styles.text, { width: 75 }]}>Memo</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setMemo}
+          value={memo}
+          placeholder="Plesae type the memo here. "
+        />
+      </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={[styles.submitButton, { marginHorizontal: 50 }]}
+          onPress={() => handleCancel()}
+        >
+          <Text style={styles.buttonText}> Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.submitButton, { marginHorizontal: 50 }]}
+          onPress={() => handleSubmit()}
+        >
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={[styles.rowView, { position: "absolute", bottom: 10 }]}>
+        <TouchableOpacity
+          style={[styles.submitButton, { marginHorizontal: 50 }]}
+          onPress={() => handleDelete()}
+        >
+          <Text style={styles.buttonText}> Delete This Member</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );

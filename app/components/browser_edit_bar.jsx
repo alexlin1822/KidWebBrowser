@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GenerateNewId, getIcon } from "../utility/Common";
+import { styleSheetCustom } from "../utility/styles";
 
 export default function BrowserEditBar({
   resourceList,
@@ -16,23 +17,7 @@ export default function BrowserEditBar({
   updateURL,
   updateTitle,
 }) {
-  console.log("BrowserEditBar - resourceList : ", resourceList);
-
-  // rid: "0",              no
-  // title: "Add resource",
-  // description: "Add resource",
-  // default_url: "https://www.google.com/",
-  // icon: "https://www.google.com/favicon.ico",   no
-  // memo: "",
-  // status: "0",
-  // url_include: "",
-  // title_include: "",
-  // whitelist: "",
-  // use_url_include: true,
-  // use_title_include: false,
-  // use_whitelist: false,
-  // last_url: "https://www.google.com/",          no
-  // time_limit: "30",
+  // console.log("BrowserEditBar - resourceList : ", resourceList);
 
   const [defaultUrl, setDefaultUrl] = useState(resourceList.default_url);
   const [webTitle, setWebTitle] = useState(
@@ -143,8 +128,8 @@ export default function BrowserEditBar({
   };
 
   return (
-    <View style={{ backgroundColor: "#d4e3fa", paddingVertical: 2 }}>
-      <View style={styles.rowView}>
+    <View style={{ backgroundColor: "#d1e3fa", paddingVertical: 2 }}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <TouchableOpacity
           style={{ alignItems: "center" }}
           onPress={handleSetDefalut}
@@ -166,12 +151,12 @@ export default function BrowserEditBar({
           placeholder="Please type or click the button to import the URL here"
         />
       </View>
-      <View style={styles.rowView}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <TouchableOpacity
           style={{ alignItems: "center" }}
           onPress={handleSetIcon}
         >
-          <Image source={{ uri: getIcon(iconUrl) }} style={styles.image} />
+          <Image source={{ uri: getIcon(iconUrl) }} style={styles.icon_image} />
         </TouchableOpacity>
         <TextInput
           style={[styles.textInput, { flex: 0.5 }]}
@@ -187,7 +172,7 @@ export default function BrowserEditBar({
           placeholder="Please type description here"
         />
       </View>
-      <View style={styles.rowView}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <Text style={(styles.text, { marginHorizontal: 14 })}> Memo</Text>
         <TextInput
           style={[styles.textInput, { flex: 0.95 }]}
@@ -205,7 +190,7 @@ export default function BrowserEditBar({
         <Text style={[styles.text, { marginLeft: 0 }]}>min</Text>
       </View>
 
-      <View style={styles.rowView}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -233,7 +218,7 @@ export default function BrowserEditBar({
         </TouchableOpacity>
       </View>
 
-      <View style={styles.rowView}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -261,7 +246,7 @@ export default function BrowserEditBar({
         </TouchableOpacity>
       </View>
 
-      <View style={styles.rowView}>
+      <View style={[styles.rowView, styles.rowView_close]}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -288,11 +273,17 @@ export default function BrowserEditBar({
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.rowView}>
-        <TouchableOpacity style={styles.submitButton} onPress={handleCancel}>
+      <View style={[styles.rowView, styles.rowView_close]}>
+        <TouchableOpacity
+          style={[styles.submitButton, styles.submitButton_two]}
+          onPress={handleCancel}
+        >
           <Text style={styles.buttonText}> Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <TouchableOpacity
+          style={[styles.submitButton, styles.submitButton_two]}
+          onPress={handleSubmit}
+        >
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
@@ -300,71 +291,4 @@ export default function BrowserEditBar({
   );
 }
 
-const styles = StyleSheet.create({
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 2,
-  },
-  submitButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 100,
-    paddingHorizontal: 10,
-    backgroundColor: "blue",
-    borderRadius: 5,
-    height: 50,
-    flex: 0.5,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: "bold",
-    marginLeft: 10,
-  },
-  optionButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 120,
-    backgroundColor: "grey",
-    padding: 10,
-    marginHorizontal: 5,
-    marginVertical: 2,
-    borderRadius: 5,
-  },
-  optionButtonSelected: {
-    backgroundColor: "green",
-  },
-  optionText: {
-    color: "white",
-    fontSize: 16,
-  },
-  selectedOptionsText: {
-    marginTop: 20,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 16,
-    marginLeft: 2,
-    paddingLeft: 10,
-    height: 36,
-    borderColor: "gray",
-    borderWidth: 1,
-  },
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 2,
-  },
-  image: {
-    width: 36,
-    height: 36,
-    marginHorizontal: 18,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

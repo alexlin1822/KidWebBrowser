@@ -12,6 +12,7 @@ import {
   MaterialCommunityIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
+import { styleSheetCustom } from "../utility/styles";
 
 export default function BrowserViewBar({ resourceList, timeLeft, onClick }) {
   const handleClicked = (type) => {
@@ -32,7 +33,7 @@ export default function BrowserViewBar({ resourceList, timeLeft, onClick }) {
   }
 
   return (
-    <View style={styles.rowView}>
+    <View style={[styles.rowView, styles.rowView_close]}>
       <TouchableOpacity
         style={(styles.touchableOpacity, { marginHorizontal: 5 })}
         onPress={() => handleClicked("Exit")}
@@ -83,30 +84,4 @@ export default function BrowserViewBar({ resourceList, timeLeft, onClick }) {
   );
 }
 
-const styles = StyleSheet.create({
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 5,
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 16,
-    marginHorizontal: 10,
-    height: 36,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-  },
-  touchableOpacity: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
-  text: {
-    fontSize: 16,
-    marginHorizontal: 10,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

@@ -97,60 +97,58 @@ export default function Signup() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <Text>Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_nickname}
-            onChangeText={setNickName}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>User Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_username}
-            onChangeText={setUserName}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Email</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Password</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
+    <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_nickname}
+          onChangeText={setNickName}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>User Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_username}
+          onChangeText={setUserName}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Email</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignup("Sign Up")}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignup("Sign Up")}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignup("Cancel")}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignup("Cancel")}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );

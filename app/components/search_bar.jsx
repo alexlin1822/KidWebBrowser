@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
+import { styleSheetCustom } from "../utility/styles";
 
 import {
   StyleSheet,
@@ -58,7 +59,7 @@ export default function SearchBar({
   }
 
   return (
-    <View style={styles.rowView}>
+    <View style={[styles.rowView, styles.rowView_close]}>
       <TouchableOpacity
         style={styles.touchableOpacity}
         onPress={() => handleGoBack()}
@@ -88,25 +89,4 @@ export default function SearchBar({
   );
 }
 
-const styles = StyleSheet.create({
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 5,
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 16,
-    marginHorizontal: 5,
-    height: 36,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-  },
-  touchableOpacity: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 2,
-    marginVertical: 5,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

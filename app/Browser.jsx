@@ -13,12 +13,8 @@ import {
   getTotalTimeSpend,
 } from "./utility/Common";
 
-import {
-  SaveNewData,
-  SaveUpdateData,
-  LoadData,
-  deleteData,
-} from "./utility/Store";
+import { SaveNewData, SaveUpdateData } from "./utility/Store";
+import { styleSheetCustom } from "./utility/styles";
 
 import BrowserViewBar from "./components/browser_view_bar";
 import SearchBar from "./components/search_bar";
@@ -63,7 +59,7 @@ export default function Browser() {
     const timer = setInterval(() => {
       AddOneTotalTimeSpend();
       setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000);
+    }, 1000 * 60);
     //TODO: change to 1000 * 60
 
     return () => clearInterval(timer);
@@ -104,62 +100,6 @@ export default function Browser() {
         JSON.stringify(newResourceProfile)
       );
     }
-
-    // Clicked submit button
-    // Save resource profile to local storage
-    // console.log("Browser handleEditSubmit: NewResourceList: ");
-    // console.log(newResourceProfile);
-
-    // let value = await LoadData(
-    //   "resources",
-    //   GetStorageKey(currentAccountID, focusMemberID)
-    // );
-
-    // if (value !== "") {
-    //   let tmpMemberProfile = JSON.parse(value);
-
-    //   let keyToUpdate = newResourceProfile.rid;
-    //   const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-    //     if (item.rid === keyToUpdate) {
-    //       // Update the desired key's value here
-    //       return {
-    //         ...item,
-    //         // rid:   //rid is not changed
-    //         title: newResourceProfile.title,
-    //         description: newResourceProfile.description,
-    //         default_url: newResourceProfile.default_url,
-    //         icon: newResourceProfile.icon,
-    //         memo: newResourceProfile.memo,
-    //         status: newResourceProfile.status,
-    //         url_include: newResourceProfile.url_include,
-    //         title_include: newResourceProfile.title_include,
-    //         whitelist: newResourceProfile.whitelist,
-    //         use_url_include: newResourceProfile.use_url_include,
-    //         use_title_include: newResourceProfile.use_title_include,
-    //         use_whitelist: newResourceProfile.use_whitelist,
-    //         last_url: newResourceProfile.default_url,
-    //         time_limit: newResourceProfile.time_limit,
-    //       };
-    //     }
-    //     return item;
-    //   });
-
-    //   if (currentResourceID === "0") {
-    //     //Add new records
-    //     tmpMemberProfile.resourcelist.push(newResourceProfile);
-    //   } else {
-    //     tmpMemberProfile.resourcelist = updatedData;
-    //   }
-    //   value = JSON.stringify(tmpMemberProfile);
-
-    //   console.log("Browser handleEditSubmit: [value] to save ");
-    //   console.log(value);
-
-    //   await SaveData_local(
-    //     GetStorageKey(currentAccountID, focusMemberID),
-    //     value
-    //   );
-    // }
 
     SetCurrentID("currentResourceID", "");
 
@@ -213,39 +153,6 @@ export default function Browser() {
       GetStorageKey(currentAccountID, myfocusMemberID),
       JSON.stringify(newResourceProfile)
     );
-
-    // let value = await LoadData(
-    //   "resources",
-    //   GetStorageKey(currentAccountID, myfocusMemberID)
-    // );
-
-    // if (value !== "") {
-    //   let tmpMemberProfile = JSON.parse(value);
-
-    //   let keyToUpdate = currentResourceID;
-    //   const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-    //     if (item.rid === keyToUpdate) {
-    //       // Update the desired key's value here
-    //       return {
-    //         ...item,
-    //         // rid:   //rid is not changed
-    //         last_url: newURL,
-    //       };
-    //     }
-    //     return item;
-    //   });
-
-    //   tmpMemberProfile.resourcelist = updatedData;
-    //   value = JSON.stringify(tmpMemberProfile);
-
-    //   console.log("Browser updateLastURL: [value] to save ");
-    //   console.log(value);
-
-    //   await SaveData_local(
-    //     GetStorageKey(currentAccountID, myfocusMemberID),
-    //     value
-    //   );
-    // }
   };
 
   const handleUrlChange = (newNavState) => {
@@ -322,101 +229,59 @@ export default function Browser() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        {isEditMode ? (
-          <View>
-            <SearchBar
-              onSubmit={handleSubmit}
-              updateURL={url}
-              onGoBack={() => handleMenuClicked("GoBack")}
-              onGoForward={() => handleMenuClicked("GoForward")}
-              onReload={() => handleMenuClicked("Reload")}
-            />
-            <BrowserEditBar
-              onEditBarSubmit={handleEditSubmit}
-              resourceList={resourceProfile}
-              updateURL={url}
-              updateTitle={webTitle}
-            />
-          </View>
-        ) : (
-          isShowViewMenu && (
-            <BrowserViewBar
-              resourceList={resourceProfile}
-              timeLeft={timeLeft}
-              onClick={handleMenuClicked}
-            />
-          )
-        )}
-        <WebView
-          ref={webViewRef}
-          style={styles.webview}
-          source={{ uri: url }}
-          onNavigationStateChange={handleUrlChange}
-          javaScriptEnabled={true}
-          userAgent={customUserAgent}
-          sharedCookiesEnabled={true}
-          onLoadEnd={handleLoadEnd}
-        />
-        {/* <StatusBar style="auto" /> */}
+    <SafeAreaProvider style={styles.container}>
+      {isEditMode ? (
+        <View>
+          <SearchBar
+            onSubmit={handleSubmit}
+            updateURL={url}
+            onGoBack={() => handleMenuClicked("GoBack")}
+            onGoForward={() => handleMenuClicked("GoForward")}
+            onReload={() => handleMenuClicked("Reload")}
+          />
+          <BrowserEditBar
+            onEditBarSubmit={handleEditSubmit}
+            resourceList={resourceProfile}
+            updateURL={url}
+            updateTitle={webTitle}
+          />
+        </View>
+      ) : (
+        isShowViewMenu && (
+          <BrowserViewBar
+            resourceList={resourceProfile}
+            timeLeft={timeLeft}
+            onClick={handleMenuClicked}
+          />
+        )
+      )}
+      <WebView
+        ref={webViewRef}
+        style={styles.webview}
+        source={{ uri: url }}
+        onNavigationStateChange={handleUrlChange}
+        javaScriptEnabled={true}
+        userAgent={customUserAgent}
+        sharedCookiesEnabled={true}
+        onLoadEnd={handleLoadEnd}
+      />
+      {/* <StatusBar style="auto" /> */}
 
-        {!isEditMode && (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={clickHandler}
-            style={styles.touchableOpacityStyle}
-          >
-            {/* <Image
-          //We are making FAB using TouchableOpacity with an image
-          //We are using online image here
-          source={{
-            uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
-          }}
-          //You can use you project image Example below
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
-        />
-         */}
-            <MaterialCommunityIcons
-              name="arrow-top-left-bold-box"
-              size={50}
-              color="orange"
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+      {!isEditMode && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={clickHandler}
+          style={styles.touchableOpacityStyle}
+        >
+          <MaterialCommunityIcons
+            name="arrow-top-left-bold-box"
+            size={50}
+            color="orange"
+          />
+        </TouchableOpacity>
+      )}
     </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingTop: 40,
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-  },
-  webview: {
-    flex: 1,
-  },
-  touchableOpacityStyle: {
-    position: "absolute",
-    width: 50,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    // left: 10,
-    // top: 90,
-    right: 30,
-    bottom: 10,
-  },
-  floatingButtonStyle: {
-    resizeMode: "contain",
-    width: 50,
-    height: 50,
-    backgroundColor: "black",
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

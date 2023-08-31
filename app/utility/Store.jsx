@@ -18,6 +18,13 @@ import {
   CheckAccountExist_local,
 } from "./LocalStore";
 
+/**
+ * Save new data to Storage
+ * @param {*} type      accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname   always use GetStorageKey()
+ * @param {*} content   JSON String
+ * @returns  true or false
+ */
 export async function SaveNewData(type, storage_keyname, content) {
   if (getIsRemote()) {
     return await SaveNewData_remote(type, storage_keyname, content);
@@ -26,6 +33,13 @@ export async function SaveNewData(type, storage_keyname, content) {
   }
 }
 
+/**
+ * Update data to Storage
+ * @param {*} type      accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname   always use GetStorageKey()
+ * @param {*} content   JSON String
+ * @returns  true or false
+ */
 export async function SaveUpdateData(type, storage_keyname, content) {
   if (getIsRemote()) {
     return await SaveUpdateData_remote(type, storage_keyname, content);
@@ -34,22 +48,41 @@ export async function SaveUpdateData(type, storage_keyname, content) {
   }
 }
 
-export async function deleteData(type, storage_keyname, content) {
+/**
+ * Delete data from Storage (set the status ="-1")
+ * @param {*} type        accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname   always use GetStorageKey()
+ * @param {*} keyToDelete  if keyToDelete is not null, then delete the key after load
+ * @returns true or false
+ */
+export async function deleteData(type, storage_keyname, keyToDelete) {
   if (getIsRemote()) {
-    return await deleteData_remote(type, storage_keyname, content);
+    return await deleteData_remote(type, storage_keyname, keyToDelete);
   } else {
-    return await deleteData_local(type, storage_keyname, content);
+    return await deleteData_local(type, storage_keyname, keyToDelete);
   }
 }
 
-export async function CheckAccountExist(username, email) {
+/**
+ * Load data from Storage
+ * @param {*} datatype    accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname  always use GetStorageKey()
+ * @returns String
+ */
+export async function LoadData(datatype, storage_keyname) {
   if (getIsRemote()) {
-    return await CheckAccountExist_remote(username, email);
+    return await LoadData_remote(datatype, storage_keyname);
   } else {
-    return await CheckAccountExist_local(username, email);
+    return await LoadData_local(datatype, storage_keyname);
   }
 }
 
+/**
+ * Get account id by username and password
+ * @param {*} username :string
+ * @param {*} password :string
+ * @returns : string
+ */
 export async function LoadAccountData(username, password) {
   if (getIsRemote()) {
     return await LoadAccountData_remote(username, password);
@@ -58,18 +91,16 @@ export async function LoadAccountData(username, password) {
   }
 }
 
-// export async function LoadData(datatype, storage_keyname) {
-//   if (getIsRemote()) {
-//     return await LoadData_remote(datatype, storage_keyname);
-//   } else {
-//     return await LoadData_local(datatype, storage_keyname);
-//   }
-// }
-
-export async function LoadData(datatype, storage_keyname) {
+/**
+ * check if the username or email is exist
+ * @param {*} username
+ * @param {*} email
+ * @returns String
+ */
+export async function CheckAccountExist(username, email) {
   if (getIsRemote()) {
-    return await LoadData_remote(datatype, storage_keyname);
+    return await CheckAccountExist_remote(username, email);
   } else {
-    return await LoadData_local(datatype, storage_keyname);
+    return await CheckAccountExist_local(username, email);
   }
 }

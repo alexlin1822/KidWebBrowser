@@ -4,11 +4,11 @@ import { GetStorageKey, GenerateNewId } from "./Common";
 /* LOCAl STORAGE*/
 
 /**
- *
- * @param {*} type      accounts, members, resources
+ * Save new data to Storage
+ * @param {*} type      accounts, members, resources, account_profile, member_profile
  * @param {*} storage_keyname   always use GetStorageKey()
  * @param {*} content   JSON String
- * @returns
+ * @returns  true or false
  */
 export async function SaveNewData_local(type, storage_keyname, content) {
   let result = false;
@@ -29,6 +29,7 @@ export async function SaveNewData_local(type, storage_keyname, content) {
   if (value != "" && value != null) {
     blocks = JSON.parse(value);
   }
+
   if (type === "accounts") {
     blocks.push(dict_content);
     str_content = JSON.stringify(blocks);
@@ -60,11 +61,11 @@ export async function SaveNewData_local(type, storage_keyname, content) {
 }
 
 /**
- *
- * @param {*} type      accounts, members, resources
+ * Update data to Storage
+ * @param {*} type      accounts, members, resources, account_profile, member_profile
  * @param {*} storage_keyname   always use GetStorageKey()
  * @param {*} content   JSON String
- * @returns
+ * @returns  true or false
  */
 export async function SaveUpdateData_local(type, storage_keyname, content) {
   //TODO: need check can not save
@@ -179,32 +180,75 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
   }
 }
 
-export async function deleteData_local(type, storage_keyname) {
-  //TODO: need implement
+/**
+ * Delete data from Storage (set the status ="-1")
+ * @param {*} type        accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname   always use GetStorageKey()
+ * @param {*} keyToDelete   key of the data
+ * @returns true or false
+ */
+export async function deleteData_local(type, storage_keyname, keyToDelete) {
+  let result = false;
+
+  let str_content = "";
+  let db_data = await LoadData_local("all", storage_keyname);
+  if (db_data != "" && db_data != null) {
+    dict_db_data = JSON.parse(db_data);
+  } else {
+    return result;
+  }
+
+  if (type == "accounts") {
+    const updatedDictionary = dict_db_data.filter(
+      (item) => item.accountID !== keyToDelete
+    );
+    str_content = JSON.stringify(updatedDictionary);
+  } else if (type == "members") {
+    const updatedDictionary = dict_db_data.memberlist.filter(
+      (item) => item.key !== keyToDelete
+    );
+    dict_db_data.memberlist = updatedDictionary;
+    str_content = JSON.stringify(dict_db_data);
+  } else if (type == "resources") {
+    const updatedDictionary = dict_db_data.resourcelist.filter(
+      (item) => item.rid !== keyToDelete
+    );
+    dict_db_data.resourcelist = updatedDictionary;
+    str_content = JSON.stringify(dict_db_data);
+  } else if (type === "account_profile" || type === "member_profile") {
+    try {
+      console.log("LocalStore - Delete_local 1: done! " + str_content);
+      return await SecureStore.deleteItemAsync(storage_keyname);
+    } catch (error) {
+      // Error saving data
+      console.log("LocalStore - SaveNewData_local Error:");
+      console.log(error);
+      return false;
+    }
+  } else {
+    console.log("LocalStore - deleteData_local : else! " + result);
+    return result;
+  }
+
+  // Save the user data in Storage
+  try {
+    console.log(
+      "LocalStore - deleteData_local : done! " + storage_keyname + str_content
+    );
+    return await SecureStore.setItemAsync(storage_keyname, str_content);
+  } catch (error) {
+    // Error saving data
+    console.log("LocalStore - deleteData_local Error:");
+    console.log(error);
+    return false;
+  }
 }
 
-/** Save data to Storage
- * @param {*} storage_keyname : String
- * @param {*} content : String
- * @returns : Boolean
- */
-// export async function SaveData_local(storage_keyname, content) {
-//   console.log(`Common - SaveData_local : ` + storage_keyname + "  Content: " + content);
-//   // Save the user data in Storage
-//   try {
-//     // return await SecureStore.setItemAsync(storage_keyname, content);
-//     return await SecureStore.setItemAsync(storage_keyname, content);
-//   } catch (error) {
-//     // Error saving data
-//     console.log("Common - SaveData_local Error:");
-//     console.log(error);
-//     return false;
-//   }
-// }
-
-/** Load data from Storage
- * @param {*} storage_keyname : String
- * @returns : String
+/**
+ * Load data from Storage
+ * @param {*} datatype    accounts, members, resources, account_profile, member_profile
+ * @param {*} storage_keyname  always use GetStorageKey()
+ * @returns String
  */
 export async function LoadData_local(datatype, storage_keyname) {
   if (datatype === "") {

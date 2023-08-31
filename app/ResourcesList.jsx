@@ -7,15 +7,11 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { GetCurrentID, SetCurrentID, GetStorageKey } from "./utility/Common";
 import { styleSheetCustom } from "./utility/styles";
-import {
-  SaveNewData,
-  SaveUpdateData,
-  LoadData,
-  deleteData,
-} from "./utility/Store";
+import { SaveNewData, LoadData } from "./utility/Store";
 
 import { InitResourceProfile } from "./utility/DataStructure";
 import ResourceCard from "./components/resource_card";
@@ -112,17 +108,22 @@ export default function ResourcesList() {
     );
   } else {
     return (
-      <SafeAreaProvider>
-        <View style={styles.container}>
-          <View style={styles.rowView}>
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={() => clickLogout()}
-            >
-              <Text style={styles.buttonText}>Go Back</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.container}>
+      <SafeAreaProvider style={styles.container}>
+        <View style={[styles.rowView]}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => clickLogout()}
+          >
+            <Text style={styles.buttonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.rowView]}>
+          <Text style={[styles.buttonText, { color: "black" }]}>
+            Please select one. Press to view the resources. Long press to edit.
+          </Text>
+        </View>
+        <ScrollView>
+          <View style={[styles.rowView, styles.rowView_wrap]}>
             {resourceProfile.resourcelist.map((item) => (
               <ResourceCard
                 key={item.rid}
@@ -132,41 +133,9 @@ export default function ResourcesList() {
               />
             ))}
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaProvider>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 5,
-    margin: 5,
-  },
-  rowView: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 2,
-    marginVertical: 10,
-    marginHorizontal: 5,
-  },
-  submitButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 10,
-    paddingHorizontal: 10,
-    backgroundColor: "blue",
-    borderRadius: 5,
-    height: 50,
-    marginTop: 20,
-    marginBottom: 50,
-  },
-  buttonText: {
-    padding: 10,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);
