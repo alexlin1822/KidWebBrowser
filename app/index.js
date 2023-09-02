@@ -5,6 +5,11 @@ import { router } from "expo-router";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { getIsRemote, setIsRemote } from "./utility/Common";
 
+/**
+ * Entry point for the app
+ * @returns
+ *
+ */
 export default function Page() {
   const [remoteMode, setRemoteMode] = useState(getIsRemote());
 
@@ -59,7 +64,7 @@ export default function Page() {
             <Text style={styles.buttonText}>Start Here</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.rowView}>
+        {/* <View style={styles.rowView}>
           <Text style={styles.text}>Local</Text>
           <Switch
             style={{ marginTop: 50 }}
@@ -67,7 +72,7 @@ export default function Page() {
             value={remoteMode}
           />
           <Text style={styles.text}>Remote</Text>
-        </View>
+        </View> */}
       </View>
     </SafeAreaProvider>
   );

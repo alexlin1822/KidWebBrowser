@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -13,7 +13,7 @@ import {
   getTotalTimeSpend,
 } from "./utility/Common";
 
-import { SaveNewData, SaveUpdateData } from "./utility/Store";
+import { SaveNewData, SaveUpdateData, deleteData } from "./utility/Store";
 import { styleSheetCustom } from "./utility/styles";
 
 import BrowserViewBar from "./components/browser_view_bar";
@@ -21,13 +21,17 @@ import SearchBar from "./components/search_bar";
 import BrowserEditBar from "./components/browser_edit_bar";
 
 export default function Browser() {
+  const customUserAgent =
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
+
   const params = useLocalSearchParams();
   const { passItem, whatMode } = params;
   let item = JSON.parse(passItem);
   let isEditMode = whatMode === "true" ? true : false;
 
-  const [url, setUrl] = useState(item.last_url);
-  const [webTitle, setWebTitle] = useState("");
+  const [webSourceUrl, setWebSourceUrl] = useState(item.last_url);
+  const [currentUrl, setCurrentUrl] = useState(item.last_url);
+  const [currentWebTitle, setCurrentWebTitle] = useState("");
 
   const [resourceProfile, setResourceList] = useState(item);
 
@@ -45,8 +49,6 @@ export default function Browser() {
     parseInt(item.time_limit) - getTotalTimeSpend()
   );
   const [isShowViewMenu, setIsShowViewMenu] = useState(false);
-  const customUserAgent =
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
 
   // Times up function
   useEffect(() => {
@@ -65,7 +67,15 @@ export default function Browser() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  console.log("Browser - currentResourceID : " + currentResourceID);
+  // console.log("Browser - currentResourceID : " + currentResourceID);
+
+  const jumpToMembers = async () => {
+    SetCurrentID("currentResourceID", "");
+    router.push({
+      pathname: "/ResourcesList",
+      params: { needLoad: true },
+    });
+  };
 
   /**
    * @description browser_edit_bar submit the new resource profile to here
@@ -76,12 +86,46 @@ export default function Browser() {
     if (newResourceProfile === null) {
       // Cancel button
       // Just return to home page
-      console.log("Browser - handleEditSubmit: Cancel button");
-      SetCurrentID("currentResourceID", "");
-      router.push({
-        pathname: "/ResourcesList",
-        params: { needLoad: false },
-      });
+      jumpToMembers();
+      return;
+    } else if (newResourceProfile === "delete") {
+      // Delete button
+      // Delete the current resource profile
+      await Alert.alert(
+        "Delete This resource",
+        "Deleted resource can not recover! Are you sure?",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: async () => {
+              // Handle the "Yes" button press here
+              if (focusMemberID != "0") {
+                try {
+                  await deleteData(
+                    "resources",
+                    GetStorageKey(currentAccountID, focusMemberID),
+                    currentResourceID
+                  );
+
+                  alert("Member has been deleted!");
+
+                  await jumpToMembers();
+                } catch (e) {
+                  console.log(
+                    "Browser- handleDelete - deleteData - transactions - error: " +
+                      e
+                  );
+                }
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
       return;
     }
 
@@ -101,12 +145,8 @@ export default function Browser() {
       );
     }
 
-    SetCurrentID("currentResourceID", "");
-
-    router.push({
-      pathname: "/ResourcesList",
-      params: { needLoad: true },
-    });
+    jumpToMembers();
+    return;
   };
 
   /**
@@ -116,10 +156,10 @@ export default function Browser() {
    *
    */
   const handleSubmit = (searchText) => {
-    setUrl(`${searchText}`);
+    setWebSourceUrl(`${searchText}`);
   };
 
-  const handleMenuClicked = (type) => {
+  const handleMenuClicked = async (type) => {
     if (type === "GoBack") {
       webViewRef.current.goBack();
     } else if (type === "GoForward") {
@@ -127,9 +167,9 @@ export default function Browser() {
     } else if (type === "Reload") {
       webViewRef.current.reload();
     } else if (type === "Exit") {
-      updateLastURL(focusMemberID, url);
+      await updateLastURL(currentUrl);
       SetCurrentID("currentResourceID", "");
-      console.log("Browser - Exit: " + currentResourceID);
+      // console.log("Browser - Exit: " + currentResourceID);
       router.push({
         pathname: "/ResourcesList",
         params: { needLoad: false },
@@ -144,50 +184,47 @@ export default function Browser() {
    * @param {*} myfocusMemberID
    * @param {*} newURL
    */
-  const updateLastURL = async (myfocusMemberID, newURL) => {
-    console.log("Browser - updateLastURL: " + myfocusMemberID + "  " + newURL);
+  const updateLastURL = async (newURL) => {
+    console.log("Browser - updateLastURL: " + focusMemberID + "  " + newURL);
     let newResourceProfile = resourceProfile;
     newResourceProfile.last_url = newURL;
+    console.log(
+      "Browser - updateLastURL: " + JSON.stringify(newResourceProfile)
+    );
+
     await SaveUpdateData(
       "resources",
-      GetStorageKey(currentAccountID, myfocusMemberID),
+      GetStorageKey(currentAccountID, focusMemberID),
       JSON.stringify(newResourceProfile)
     );
   };
 
-  const handleUrlChange = (newNavState) => {
-    const { url, title } = newNavState;
-    console.log("Browser - handleUrlChange");
+  const handleUrlChange = (nativeEvent) => {
+    const { url, title } = nativeEvent;
+    console.log("Browser - handleUrlChange url=" + url + " title=" + title);
+    console.log("currentURL = " + currentUrl);
     if (isEditMode) {
-      setUrl(url);
-      setWebTitle(title);
+      setCurrentUrl(url);
+      setCurrentWebTitle(title);
     } else {
       if (!checkWeb(url, title)) {
-        setUrl(item.default_url);
+        // setUrl(item.default_url);
         webViewRef.current.goBack();
       } else {
-        setUrl(url);
-        setWebTitle(title);
+        setCurrentUrl(url);
+        setCurrentWebTitle(title);
       }
     }
   };
 
-  const handleLoadEnd = (newNavState) => {
-    console.log("Browser - handleLoadEnd");
-    // const { url, title } = newNavState;
-    // console.log("Browser - handleUrlChange url=" + url + " title=" + title);
-    // if (isEditMode) {
-    //   setUrl(url);
-    //   setWebTitle(title);
-    // } else {
-    //   if (!checkWeb(url, title)) {
-    //     setUrl(item.default_url);
-    //     webViewRef.current.goBack();
-    //   } else {
-    //     setUrl(url);
-    //     setWebTitle(title);
-    //   }
-    // }
+  const handleLoadStart = (event) => {
+    const { url, title } = event.nativeEvent;
+    // console.log("Browser - handleLoadStart url=" + url + " title=" + title);
+    // console.log("currentURL = " + currentUrl);
+  };
+
+  const handleLoadEnd = (event) => {
+    const { url, title } = event.nativeEvent;
   };
 
   const clickHandler = () => {
@@ -234,7 +271,7 @@ export default function Browser() {
         <View>
           <SearchBar
             onSubmit={handleSubmit}
-            updateURL={url}
+            updateURL={currentUrl}
             onGoBack={() => handleMenuClicked("GoBack")}
             onGoForward={() => handleMenuClicked("GoForward")}
             onReload={() => handleMenuClicked("Reload")}
@@ -242,8 +279,8 @@ export default function Browser() {
           <BrowserEditBar
             onEditBarSubmit={handleEditSubmit}
             resourceList={resourceProfile}
-            updateURL={url}
-            updateTitle={webTitle}
+            updateURL={currentUrl}
+            updateTitle={currentWebTitle}
           />
         </View>
       ) : (
@@ -256,13 +293,15 @@ export default function Browser() {
         )
       )}
       <WebView
+        originWhitelist={["*"]}
         ref={webViewRef}
         style={styles.webview}
-        source={{ uri: url }}
+        source={{ uri: webSourceUrl }}
         onNavigationStateChange={handleUrlChange}
         javaScriptEnabled={true}
         userAgent={customUserAgent}
         sharedCookiesEnabled={true}
+        onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
       />
       {/* <StatusBar style="auto" /> */}

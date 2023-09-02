@@ -20,7 +20,7 @@ export default function Login() {
   const handleLogin = async () => {
     // Simulating a login check (you should replace this with your actual authentication logic)
     let result = await LoadAccountData(userName, password);
-    console.log(`Login - handleLogin : ${result}`);
+    // console.log(`Login - handleLogin : ${result}`);
 
     if (result != "{}") {
       let dict_result = JSON.parse(result);
@@ -29,6 +29,9 @@ export default function Login() {
       );
 
       SetCurrentID("currentAccountID", dict_result.owner);
+      SetCurrentID("currentNickName", dict_result.nickname);
+      SetCurrentID("currentPin", dict_result.pin);
+
       resetTotalTimeSpend();
       router.push({
         pathname: "/MembersList",

@@ -47,7 +47,7 @@ export default function UserEdit() {
   const [status, setStatus] = useState(item.status);
 
   //Go back to UserEdit Page
-  const jumpToUserEdit = async () => {
+  const jumpToMembers = async () => {
     SetCurrentID("focusMemberID", "");
 
     let str_member = await LoadData(
@@ -89,7 +89,7 @@ export default function UserEdit() {
         JSON.stringify(newPersionProfile)
       );
     }
-    await jumpToUserEdit();
+    await jumpToMembers();
   };
 
   const handleDelete = async () => {
@@ -115,13 +115,13 @@ export default function UserEdit() {
                 );
                 console.log("UserEdit - handleDelete - deleteData - start2");
                 await deleteData(
-                  "account_profile",
+                  "member_profile",
                   GetStorageKey(currentAccountID, focusMemberID),
                   ""
                 );
                 alert("Member has been deleted!");
 
-                await jumpToUserEdit();
+                await jumpToMembers();
               } catch (e) {
                 console.log(
                   "UserEdit - handleDelete - deleteData - transactions - error: " +
@@ -137,7 +137,7 @@ export default function UserEdit() {
   };
 
   const handleCancel = async () => {
-    await jumpToUserEdit();
+    await jumpToMembers();
   };
 
   const handImageChange = (which) => {
@@ -179,7 +179,7 @@ export default function UserEdit() {
         >
           <AntDesign name="caretleft" size={36} color="black" />
         </TouchableOpacity>
-        <Image source={{ uri: icon }} style={styles.people_image} />
+        <Image source={{ uri: icon }} style={styles.image} />
         <TouchableOpacity
           style={[
             styles.submitButton,
@@ -233,7 +233,7 @@ export default function UserEdit() {
       </View>
       <View style={[styles.rowView, { position: "absolute", bottom: 10 }]}>
         <TouchableOpacity
-          style={[styles.submitButton, { marginHorizontal: 50 }]}
+          style={[styles.deleteButton, { flex: 1 }]}
           onPress={() => handleDelete()}
         >
           <Text style={styles.buttonText}> Delete This Member</Text>

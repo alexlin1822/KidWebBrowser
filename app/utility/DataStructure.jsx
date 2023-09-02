@@ -18,7 +18,8 @@ export function AddNewAccount(
   text_nickname,
   text_username,
   text_email,
-  text_password
+  text_password,
+  text_pin
 ) {
   const myAccount = {
     accountID: accountID,
@@ -26,26 +27,25 @@ export function AddNewAccount(
     username: text_username,
     email: text_email,
     password: text_password,
+    pin: text_pin,
     status: "0",
   };
   return myAccount;
 }
 
 /**
- * Account profile object
+ * Account profile object (incling account information and member list)
  * @param {*} accountID
  * @param {*} text_nickname
  * @param {*} text_email
  * @returns String
  */
-export function InitAccountProfile(accountID, text_nickname, text_email) {
+export function InitAccountProfile(accountID) {
   //db:kwb
   //collection: members
   console.log("InitAccountProfile");
   const myAccountProfile = {
     owner: accountID,
-    nickname: text_nickname,
-    email: text_email,
     profile: {
       setting1: "aa",
       setting2: "bb",
@@ -54,7 +54,7 @@ export function InitAccountProfile(accountID, text_nickname, text_email) {
       {
         key: "0",
         title: "Add Person",
-        description: "Add your kid or family member",
+        description: "Add family member",
         icon: "https://alexlin1822.github.io/aimage/0.png",
         memo: "",
         status: "0",
@@ -65,8 +65,11 @@ export function InitAccountProfile(accountID, text_nickname, text_email) {
   return JSON.stringify(myAccountProfile);
 }
 
-// #### Resource profile object ####
-
+/**
+ * Resource profile object
+ * @param {*} memberID  string
+ * @returns string
+ */
 export function InitResourceProfile(memberID) {
   //db:kwb
   //collection: resources

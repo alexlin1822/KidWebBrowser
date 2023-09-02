@@ -55,3 +55,18 @@ export async function LoadAccountData_remote(username, password) {}
  * @returns String
  */
 export async function CheckAccountExist_remote(username, email) {}
+
+/**
+ * Check if the value is exist
+ * @param {*} currentAccountID
+ * @param {*} key
+ * @param {*} value
+ * @returns
+ */
+export async function CheckAccountUnique_remote(
+  currentAccountID,
+  username,
+  email
+) {
+  return "";
+}

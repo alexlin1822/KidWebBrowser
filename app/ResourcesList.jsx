@@ -15,6 +15,7 @@ import { SaveNewData, LoadData } from "./utility/Store";
 
 import { InitResourceProfile } from "./utility/DataStructure";
 import ResourceCard from "./components/resource_card";
+import PasswordPopup from "./components/popup_password";
 
 export default function ResourcesList() {
   const params = useLocalSearchParams();
@@ -23,30 +24,57 @@ export default function ResourcesList() {
   const [isLoading, setIsLoading] = useState(needLoad);
   const [resourceProfile, setResourceList] = useState({});
 
+  const [whoCall, setWhoCall] = useState("");
+  const [currentItem, setCurrentItem] = useState({});
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const currentAccountID = GetCurrentID("currentAccountID");
   const focusMemberID = GetCurrentID("focusMemberID");
+  const currerntMemberName = GetCurrentID("currentMemberName");
 
   // ResourceCard click event
   const clickResourceCard = (item, isEditMode) => {
     if (isLoading) return;
-    console.log("ResourcesList click check point");
-
     SetCurrentID("currentResourceID", item.rid);
+    setCurrentItem(item);
 
     let whatIsMode = item.rid === "0" ? true : isEditMode;
-    console.log("whatIsMode" + whatIsMode);
 
-    router.push({
-      pathname: "/Browser",
-      params: {
-        passItem: JSON.stringify(item),
-        whatMode: whatIsMode.toString(),
-      },
-    });
+    if (whatIsMode == true) {
+      setWhoCall("resources");
+      setModalVisible(true);
+    } else {
+      router.push({
+        pathname: "/Browser",
+        params: {
+          passItem: JSON.stringify(item),
+          whatMode: whatIsMode.toString(),
+        },
+      });
+    }
+  };
+
+  const handleSubmit = (result, whoCall) => {
+    setModalVisible(false);
+    console.log("Resources - handleSubmit: " + result);
+    if (result) {
+      if (whoCall === "resources") {
+        router.push({
+          pathname: "/Browser",
+          params: {
+            passItem: JSON.stringify(currentItem),
+            whatMode: "true",
+          },
+        });
+      }
+    } else {
+      alert("Invalid pin. Please try again.");
+    }
   };
 
   const clickLogout = async () => {
     SetCurrentID("focusMemberID", "");
+    SetCurrentID("currentMemberName", "");
 
     let str_member = await LoadData(
       "accounts",
@@ -71,7 +99,7 @@ export default function ResourcesList() {
           GetStorageKey(currentAccountID, focusMemberID)
         );
 
-        console.log("ResourcesList  - fetchData(): " + value);
+        // console.log("ResourcesList  - fetchData(): " + value);
         let tmpMemberProfile = {};
 
         if (value !== "") {
@@ -86,9 +114,6 @@ export default function ResourcesList() {
           );
         }
         setResourceList(tmpMemberProfile);
-        console.log(
-          "MembersList Fetch Data: " + JSON.stringify(tmpMemberProfile)
-        );
       } catch (e) {
         console.warn(e);
       } finally {
@@ -117,9 +142,15 @@ export default function ResourcesList() {
             <Text style={styles.buttonText}>Go Back</Text>
           </TouchableOpacity>
         </View>
+        <PasswordPopup
+          isShow={isModalVisible}
+          onSubmit={handleSubmit}
+          whoCall={whoCall}
+        />
         <View style={[styles.rowView]}>
           <Text style={[styles.buttonText, { color: "black" }]}>
-            Please select one. Press to view the resources. Long press to edit.
+            Hello, {currerntMemberName}. Press to view the resources. Long press
+            to edit.
           </Text>
         </View>
         <ScrollView>

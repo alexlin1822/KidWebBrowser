@@ -7,12 +7,16 @@ import * as Crypto from "expo-crypto";
 
 /* Global variables */
 // App settings
-const appName = "KidWebBrowser";
+const appName = "KidWebBrowser-Local";
 
 // Account data
 let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
+
+let currentNickName = ""; // Current account Nickname
+let currentPin = ""; // Current account Pin
+let currentMemberName = ""; // Current member name
 
 let totalTimeSpend = 0; // Total time spend on current resource
 
@@ -39,6 +43,62 @@ export function getIsRemote() {
 }
 
 /* Common functions for all pages and components*/
+
+/**
+ * Getters for global variables
+ * @param {*} keyname : String
+ * @returns : String
+ */
+export function GetCurrentID(keyname) {
+  if (keyname === "currentAccountID") {
+    console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
+    return currentAccountID;
+  } else if (keyname === "focusMemberID") {
+    console.log("Common - GetInfo: focusMemberID: " + focusMemberID);
+    return focusMemberID;
+  } else if (keyname === "currentResourceID") {
+    console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
+    return currentResourceID;
+  } else if (keyname === "currentNickName") {
+    console.log("Common - GetInfo: currentNickName: " + currentNickName);
+    return currentNickName;
+  } else if (keyname === "currentPin") {
+    console.log("Common - GetInfo: currentPin: " + currentPin);
+    return currentPin;
+  } else if (keyname === "currentMemberName") {
+    console.log("Common - GetInfo: currentMemberName: " + currentMemberName);
+    return currentMemberName;
+  } else {
+    console.log("Common - GetInfo: " + keyname + " return empty string");
+    return "";
+  }
+}
+
+/** Set global variables
+ * @param {*} keyname : String
+ * @param {*} content : String
+ * @returns : Boolean
+ * */
+export function SetCurrentID(keyname, content) {
+  console.log("Common - SetInfo: " + keyname + " " + content);
+  if (keyname === "currentAccountID") {
+    currentAccountID = content;
+  } else if (keyname === "focusMemberID") {
+    focusMemberID = content;
+  } else if (keyname === "currentResourceID") {
+    currentResourceID = content;
+  } else if (keyname === "currentNickName") {
+    currentNickName = content;
+  } else if (keyname === "currentPin") {
+    currentPin = content;
+  } else if (keyname === "currentMemberName") {
+    currentMemberName = content;
+  } else {
+    console.log("Common - SetInfo: Wrong Keyname!!!! return false!!!!");
+    return false;
+  }
+  return true;
+}
 
 /**
  * Get Storage Key
@@ -85,79 +145,7 @@ export function GenerateNewId(idType) {
   return result;
 }
 
-/**
- * Getters for global variables
- * @param {*} keyname : String
- * @returns : String
- */
-export function GetCurrentID(keyname) {
-  if (keyname === "currentAccountID") {
-    console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
-    return currentAccountID;
-  } else if (keyname === "focusMemberID") {
-    console.log("Common - GetInfo: focusMemberID: " + focusMemberID);
-    return focusMemberID;
-  } else if (keyname === "currentResourceID") {
-    console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
-    return currentResourceID;
-  } else {
-    console.log("Common - GetInfo: " + keyname + " return empty string");
-    return "";
-  }
-}
-
-/** Set global variables
- * @param {*} keyname : String
- * @param {*} content : String
- * @returns : Boolean
- * */
-export function SetCurrentID(keyname, content) {
-  console.log("Common - SetInfo: " + keyname + " " + content);
-  if (keyname === "currentAccountID") {
-    currentAccountID = content;
-  } else if (keyname === "focusMemberID") {
-    focusMemberID = content;
-  } else if (keyname === "currentResourceID") {
-    currentResourceID = content;
-  } else {
-    return false;
-  }
-}
-
 /* internal functions  */
-/**
- * Load current account data in Storage
- * @param {*} currentID
- * @returns : Boolean
- */
-// async function LoadCurrentData(currentID) {
-//   try {
-//     console.log("Common - LoadCurrentData");
-
-//     currentAccountID = currentID;
-//     currentMembersListSetting = await SecureStore.getItemAsync(
-//       `${appName}:currentMembersListSetting`
-//     );
-//     currentUserData = await SecureStore.getItemAsync(
-//       `${appName}:currentUserData`
-//     );
-
-//     if (currentAccountID === null) {
-//       currentAccountID = "";
-//     }
-//     if (currentUserData === null) {
-//       currentUserData = "";
-//     }
-//     return true;
-//   } catch (error) {
-//     currentAccountID = "";
-//     currentMembersListSetting = "";
-//     currentUserData = "";
-//     console.log("Common - LoadCurrentData Error:");
-//     console.log(error);
-//     return false;
-//   }
-// }
 
 /**
  * Get the icon from the URL by using google favicon API
@@ -203,21 +191,3 @@ export function DecryptString(encryptedText) {
   const bytes = CryptoJS.AES.decrypt(encryptedText, "aabbc");
   return bytes.toString(CryptoJS.enc.Utf8);
 }
-
-// export function getShowNavigationBar() {
-//   return showNavigationBar;
-// }
-
-// export function setShowNavigationBar(value) {
-//   set_ShowNavigationBar(value);
-// }
-
-// let currentAccountID = ""; // Current account ID
-// let currentMemberList = ""; // Current member list in current account
-
-// let focusMemberID = ""; // focus member ID in current account ID
-// let focusMemberBrowseList = ""; // resource list and settings of focus member (list of URL, title, description, icon, memo, status) Current account family member list and settings
-
-// export function setCurrentAccountAndMemberList(value) {
-//   currentAccountID = value;
-// }

@@ -21,6 +21,7 @@ export default function Signup() {
   const [text_username, setUserName] = useState("");
   const [text_email, setEmail] = useState("");
   const [text_password, setPassword] = useState("");
+  const [text_pin, setPin] = useState("");
 
   /**
    * @description This function is called when the user submits the Sign Up form
@@ -36,23 +37,24 @@ export default function Signup() {
       text_nickname === "" ||
       text_username === "" ||
       text_email === "" ||
-      text_password === ""
+      text_password === "" ||
+      text_pin === ""
     ) {
       alert("Please fill in all the fields");
       return;
     }
 
     // Check if the user has entered a valid email address
-    // if (!text_email.includes("@")) {
-    //   alert("Please enter a valid email address");
-    //   return;
-    // }
+    if (!text_email.includes("@")) {
+      alert("Please enter a valid email address");
+      return;
+    }
 
     // Check if the user has entered a valid password
-    // if (text_password.length < 6) {
-    //   alert("Password must be at least 6 characters long");
-    //   return;
-    // }
+    if (text_password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
 
     // For Testing clear the account list
     // await SaveData_local(GetStorageKey(), "");
@@ -69,18 +71,15 @@ export default function Signup() {
         text_nickname,
         text_username,
         text_email,
-        text_password
+        text_password,
+        text_pin
       );
 
       //Save new account to accounts
       SaveNewData("accounts", GetStorageKey(), JSON.stringify(myAccount));
 
       //Save new account profile to members
-      let myAccountProfile = InitAccountProfile(
-        newID,
-        text_nickname,
-        text_email
-      );
+      let myAccountProfile = InitAccountProfile(newID);
 
       SaveNewData("account_profile", GetStorageKey(newID), myAccountProfile);
       console.log(
@@ -129,6 +128,15 @@ export default function Signup() {
           style={styles.textInput}
           value={text_password}
           onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Pin key</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_pin}
+          onChangeText={setPin}
           secureTextEntry={true}
         />
       </View>

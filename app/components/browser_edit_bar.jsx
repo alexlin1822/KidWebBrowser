@@ -86,8 +86,8 @@ export default function BrowserEditBar({
 
   //* Save Setting function
   const handleSubmit = () => {
-    console.log("browser_edit_bar handleSubmit: resourceList - ");
-    console.log(resourceList);
+    // console.log("browser_edit_bar handleSubmit: resourceList - ");
+    // console.log(resourceList);
 
     let newResourceList = {
       rid:
@@ -107,10 +107,14 @@ export default function BrowserEditBar({
       last_url: defaultUrl,
       time_limit: timeLimit,
     };
-    console.log("browser_edit_bar handleSubmit: NewResourceList - ");
-    console.log(newResourceList);
+    // console.log("browser_edit_bar handleSubmit: NewResourceList - ");
+    // console.log(newResourceList);
 
     onEditBarSubmit(newResourceList);
+  };
+
+  const handleDelete = () => {
+    onEditBarSubmit("delete");
   };
 
   const handleCancel = () => {
@@ -120,7 +124,7 @@ export default function BrowserEditBar({
   const handleSetDefalut = () => {
     setDefaultUrl(updateURL);
     setWebTitle(updateTitle);
-    console.log(getIcon(updateURL));
+    setIconUrl(updateURL);
   };
 
   const handleSetIcon = () => {
@@ -274,6 +278,9 @@ export default function BrowserEditBar({
         </TouchableOpacity>
       </View>
       <View style={[styles.rowView, styles.rowView_close]}>
+        <TouchableOpacity style={[styles.deleteButton]} onPress={handleDelete}>
+          <Text style={styles.buttonText}> Delete</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.submitButton, styles.submitButton_two]}
           onPress={handleCancel}

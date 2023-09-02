@@ -4,7 +4,7 @@ export const styleSheetCustom = {
     backgroundColor: "##f5fceb",
   },
   container_center: {
-    justifyContent: "center",
+    marginTop: 150,
     alignItems: "center",
     padding: 1,
   },
@@ -28,6 +28,7 @@ export const styleSheetCustom = {
   rowView_wrap: {
     flexWrap: "wrap",
     alignContent: "center",
+    justifyContent: "center",
   },
 
   webview: {
@@ -69,10 +70,20 @@ export const styleSheetCustom = {
     marginVertical: 50,
   },
   submitButton_two: {
-    flex: 0.5,
+    flex: 0.4,
     height: 50,
     marginHorizontal: 1,
     marginVertical: 5,
+  },
+  deleteButton: {
+    flex: 0.2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "red",
+    borderRadius: 5,
+    height: 50,
   },
   icon_image: {
     width: 36,
@@ -155,9 +166,41 @@ export const styleSheetCustom = {
     shadowRadius: 8,
     elevation: 5,
     margin: 20,
-    width: 220,
-    height: 220,
+    width: 210,
+    height: 210,
     alignContent: "center",
     justifyContent: "center",
+  },
+  modalView: {
+    margin: 100,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    height: 500,
+  },
+  button_popup: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
+    backgroundColor: "green",
+  },
+  text_popup: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
   },
 };

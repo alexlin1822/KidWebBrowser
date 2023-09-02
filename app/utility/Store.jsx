@@ -7,6 +7,7 @@ import {
   LoadData_remote,
   LoadAccountData_remote,
   CheckAccountExist_remote,
+  CheckAccountUnique_remote,
 } from "./RemoteStore";
 
 import {
@@ -16,6 +17,7 @@ import {
   LoadData_local,
   LoadAccountData_local,
   CheckAccountExist_local,
+  CheckAccountUnique_local,
 } from "./LocalStore";
 
 /**
@@ -102,5 +104,20 @@ export async function CheckAccountExist(username, email) {
     return await CheckAccountExist_remote(username, email);
   } else {
     return await CheckAccountExist_local(username, email);
+  }
+}
+
+/**
+ * Check if the value is exist
+ * @param {*} currentAccountID
+ * @param {*} key
+ * @param {*} value
+ * @returns
+ */
+export async function CheckAccountUnique(currentAccountID, username, email) {
+  if (getIsRemote()) {
+    return await CheckAccountUnique_remote(currentAccountID, username, email);
+  } else {
+    return await CheckAccountUnique_local(currentAccountID, username, email);
   }
 }

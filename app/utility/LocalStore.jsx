@@ -13,12 +13,12 @@ import { GetStorageKey, GenerateNewId } from "./Common";
 export async function SaveNewData_local(type, storage_keyname, content) {
   let result = false;
 
-  console.log(
-    `LocalStore - SaveNewData_local : ` +
-      storage_keyname +
-      "  Content: " +
-      content
-  );
+  //console.log(
+  //   `LocalStore - SaveNewData_local : ` +
+  //     storage_keyname +
+  //     "  Content: " +
+  //     content
+  // );
 
   let dict_content = JSON.parse(content);
   let str_content = "";
@@ -44,18 +44,18 @@ export async function SaveNewData_local(type, storage_keyname, content) {
   } else if (type === "member_profile") {
     str_content = content;
   } else {
-    console.log("LocalStore - SaveNewData_local : else! " + result);
+    //console.log("LocalStore - SaveNewData_local : else! " + result);
     return result;
   }
 
   // Save the user data in Storage
   try {
-    console.log("LocalStore - SaveNewData_local : done! " + str_content);
+    //console.log("LocalStore - SaveNewData_local : done! " + str_content);
     return await SecureStore.setItemAsync(storage_keyname, str_content);
   } catch (error) {
     // Error saving data
-    console.log("LocalStore - SaveNewData_local Error:");
-    console.log(error);
+    //console.log("LocalStore - SaveNewData_local Error:");
+    //console.log(error);
     return false;
   }
 }
@@ -68,7 +68,6 @@ export async function SaveNewData_local(type, storage_keyname, content) {
  * @returns  true or false
  */
 export async function SaveUpdateData_local(type, storage_keyname, content) {
-  //TODO: need check can not save
   console.log(
     `Common - SaveUpdateData_local : ` +
       storage_keyname +
@@ -86,7 +85,7 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
     if (type === "accounts") {
       const updatedData = dict_db_data.map((item) => {
         if (item.accountID === dict_update_content.accountID) {
-          console.log("SaveUpdateData_local_account", item);
+          //console.log("SaveUpdateData_local_account", item);
           // Update the desired key's value here
           return {
             ...item,
@@ -95,15 +94,18 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
             username: dict_update_content.username,
             email: dict_update_content.email,
             password: dict_update_content.password,
+            pin: dict_update_content.pin,
             status: dict_update_content.status,
           };
         }
         return item;
       });
       blocks = updatedData;
+      //TODO: just for test, need delete
+      console.log("SaveUpdateData_local_account", blocks);
     } else if (type === "account_profile") {
       const updatedData = () => {
-        console.log("SaveUpdateData_local_account_profile", item);
+        //console.log("SaveUpdateData_local_account_profile", item);
         // Update the desired key's value here
         return {
           ...item,
@@ -116,7 +118,7 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
     } else if (type === "members") {
       const updatedData = dict_db_data.memberlist.map((item) => {
         if (item.key === dict_update_content.key) {
-          console.log("SaveUpdateData_local_member_list", item);
+          //console.log("SaveUpdateData_local_member_list", item);
           // Update the desired key's value here
           return {
             ...item,
@@ -135,7 +137,7 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
     } else if (type === "resources") {
       const updatedData = dict_db_data.resourcelist.map((item) => {
         if (item.rid === dict_update_content.rid) {
-          console.log("SaveUpdateData_local_resources", item);
+          console.log("SaveUpdateData_local_resources : ", item);
           // Update the desired key's value here
           return {
             ...item,
@@ -165,7 +167,7 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
     }
 
     str_content = JSON.stringify(blocks);
-    console.log("SaveUpdateData_local Str_content", str_content);
+    //console.log("SaveUpdateData_local Str_content", str_content);
   }
 
   // Save the user data in Storage
@@ -174,8 +176,8 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
   } catch (error) {
     // Error saving data
 
-    console.log("Common - SaveUpdateData_local Error:");
-    console.log(error);
+    //console.log("Common - SaveUpdateData_local Error:");
+    //console.log(error);
     return false;
   }
 }
@@ -217,29 +219,29 @@ export async function deleteData_local(type, storage_keyname, keyToDelete) {
     str_content = JSON.stringify(dict_db_data);
   } else if (type === "account_profile" || type === "member_profile") {
     try {
-      console.log("LocalStore - Delete_local 1: done! " + str_content);
+      //console.log("LocalStore - Delete_local 1: done! " + str_content);
       return await SecureStore.deleteItemAsync(storage_keyname);
     } catch (error) {
       // Error saving data
-      console.log("LocalStore - SaveNewData_local Error:");
-      console.log(error);
+      //console.log("LocalStore - SaveNewData_local Error:");
+      //console.log(error);
       return false;
     }
   } else {
-    console.log("LocalStore - deleteData_local : else! " + result);
+    //console.log("LocalStore - deleteData_local : else! " + result);
     return result;
   }
 
   // Save the user data in Storage
   try {
-    console.log(
-      "LocalStore - deleteData_local : done! " + storage_keyname + str_content
-    );
+    //console.log(
+    // "LocalStore - deleteData_local : done! " + storage_keyname + str_content
+    // );
     return await SecureStore.setItemAsync(storage_keyname, str_content);
   } catch (error) {
     // Error saving data
-    console.log("LocalStore - deleteData_local Error:");
-    console.log(error);
+    //console.log("LocalStore - deleteData_local Error:");
+    //console.log(error);
     return false;
   }
 }
@@ -259,9 +261,9 @@ export async function LoadData_local(datatype, storage_keyname) {
   try {
     const value = await SecureStore.getItemAsync(storage_keyname);
 
-    console.log(
-      `LocalStore - LoadData_local : ` + storage_keyname + "  Content: " + value
-    );
+    //console.log(
+    // `LocalStore - LoadData_local : ` + storage_keyname + "  Content: " + value
+    // );
 
     if (value !== null) {
       return value;
@@ -269,8 +271,8 @@ export async function LoadData_local(datatype, storage_keyname) {
       return "";
     }
   } catch (error) {
-    console.log("LocalStore - LoadData_local Error:");
-    console.log(error);
+    //console.log("LocalStore - LoadData_local Error:");
+    //console.log(error);
     return "";
   }
 }
@@ -306,13 +308,13 @@ export async function LoadAccountData_local(username, password) {
       let dict_member = JSON.parse(str_member);
       let dict_account = dictAccountList[i];
       dict_member.nickname = dict_account.nickname;
-      dict_member.email = dict_account.email;
+      dict_member.pin = dict_account.pin;
       result = JSON.stringify(dict_member);
       break;
     }
   }
 
-  console.log(`LocalStore - LoadAccountData_local : ${result}`);
+  //console.log(`LocalStore - LoadAccountData_local : ${result}`);
   return result;
 }
 
@@ -341,6 +343,48 @@ export async function CheckAccountExist_local(username, email) {
       }
     }
   }
-  console.log(`LocalStore - CheckAccountExist_local : ${result}`);
+  //console.log(`LocalStore - CheckAccountExist_local : ${result}`);
   return result;
+}
+
+/**
+ *
+ * @param {*} currentAccountID
+ * @param {*} Username
+ * @param {*} Email
+ * @returns
+ */
+export async function CheckAccountUnique_local(
+  currentAccountID,
+  Username,
+  Email
+) {
+  let str_accountList = await LoadData_local("account_list", GetStorageKey());
+  let dict_db_data = JSON.parse(str_accountList);
+  console.log("CheckAccountUnique_local");
+  console.log(str_accountList);
+
+  const dict_username = dict_db_data.filter(
+    (item) => item.username === Username
+  );
+  console.log("CheckAccountUnique_local dict_username");
+  console.log(Username);
+  console.log(dict_username);
+
+  if (dict_username.length > 0) {
+    if (dict_username[0].accountID !== currentAccountID) {
+      return "Username is not available!!";
+    }
+  }
+
+  const dict_email = dict_db_data.filter((item) => item.email === Email);
+  console.log("CheckAccountUnique_local dict_email");
+  console.log(Email);
+  console.log(dict_email);
+  if (dict_email.length > 0) {
+    if (dict_email[0].accountID !== currentAccountID) {
+      return "Email is not available!!";
+    }
+  }
+  return "";
 }
