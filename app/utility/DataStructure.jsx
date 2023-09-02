@@ -3,34 +3,23 @@
  *               account profile, and resource profile.
  *
  */
-// #### Account List object ####
-export function InitNewAccountList_local(
-  accountID,
-  text_nickname,
-  text_username,
-  text_email,
-  text_password
-) {
-  let myAccountList = [];
-  myAccountList.push(
-    AddNewAccount(
-      accountID,
-      text_nickname,
-      text_username,
-      text_email,
-      text_password
-    )
-  );
-  return JSON.stringify(myAccountList);
-}
 
-// #### Add a new account object ####
+/**
+ * Add a new account object
+ * @param {*} accountID
+ * @param {*} text_nickname
+ * @param {*} text_username
+ * @param {*} text_email
+ * @param {*} text_password
+ * @returns Dictionary
+ */
 export function AddNewAccount(
   accountID,
   text_nickname,
   text_username,
   text_email,
-  text_password
+  text_password,
+  text_pin
 ) {
   const myAccount = {
     accountID: accountID,
@@ -38,13 +27,23 @@ export function AddNewAccount(
     username: text_username,
     email: text_email,
     password: text_password,
+    pin: text_pin,
+    status: "0",
   };
   return myAccount;
 }
 
-// #### Account profile object ####
+/**
+ * Account profile object (incling account information and member list)
+ * @param {*} accountID
+ * @param {*} text_nickname
+ * @param {*} text_email
+ * @returns String
+ */
 export function InitAccountProfile(accountID) {
-  console.log("InitAccountProfile");
+  //db:kwb
+  //collection: members
+  // console.log("InitAccountProfile");
   const myAccountProfile = {
     owner: accountID,
     profile: {
@@ -55,7 +54,7 @@ export function InitAccountProfile(accountID) {
       {
         key: "0",
         title: "Add Person",
-        description: "Add your kid or family member",
+        description: "Add family member",
         icon: "https://alexlin1822.github.io/aimage/0.png",
         memo: "",
         status: "0",
@@ -66,10 +65,15 @@ export function InitAccountProfile(accountID) {
   return JSON.stringify(myAccountProfile);
 }
 
-// #### Resource profile object ####
-
+/**
+ * Resource profile object
+ * @param {*} memberID  string
+ * @returns string
+ */
 export function InitResourceProfile(memberID) {
-  console.log("InitResourceProfile");
+  //db:kwb
+  //collection: resources
+  // console.log("InitResourceProfile");
   const myResourceProfile = {
     owner: memberID,
     resourcelist: [

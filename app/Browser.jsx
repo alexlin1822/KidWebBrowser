@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -8,25 +8,30 @@ import { router, useLocalSearchParams } from "expo-router";
 import {
   GetCurrentID,
   SetCurrentID,
-  LoadData_local,
-  SaveData_local,
   GetStorageKey,
   AddOneTotalTimeSpend,
   getTotalTimeSpend,
 } from "./utility/Common";
+
+import { SaveNewData, SaveUpdateData, deleteData } from "./utility/Store";
+import { styleSheetCustom } from "./utility/styles";
+
 import BrowserViewBar from "./components/browser_view_bar";
 import SearchBar from "./components/search_bar";
 import BrowserEditBar from "./components/browser_edit_bar";
 
 export default function Browser() {
+  const customUserAgent =
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
+
   const params = useLocalSearchParams();
   const { passItem, whatMode } = params;
   let item = JSON.parse(passItem);
   let isEditMode = whatMode === "true" ? true : false;
 
-  const [url, setUrl] = useState(item.last_url);
-  const [webTitle, setWebTitle] = useState("");
-  // const [favicon, setFavicon] = useState("");
+  const [webSourceUrl, setWebSourceUrl] = useState(item.last_url);
+  const [currentUrl, setCurrentUrl] = useState(item.last_url);
+  const [currentWebTitle, setCurrentWebTitle] = useState("");
 
   const [resourceProfile, setResourceList] = useState(item);
 
@@ -44,8 +49,6 @@ export default function Browser() {
     parseInt(item.time_limit) - getTotalTimeSpend()
   );
   const [isShowViewMenu, setIsShowViewMenu] = useState(false);
-  const customUserAgent =
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
 
   // Times up function
   useEffect(() => {
@@ -59,11 +62,20 @@ export default function Browser() {
       AddOneTotalTimeSpend();
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000 * 60);
+    //TODO: change to 1000 * 60
 
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  console.log("Browser - currentResourceID : " + currentResourceID);
+  // console.log("Browser - currentResourceID : " + currentResourceID);
+
+  const jumpToMembers = async () => {
+    SetCurrentID("currentResourceID", "");
+    router.push({
+      pathname: "/ResourcesList",
+      params: { needLoad: true },
+    });
+  };
 
   /**
    * @description browser_edit_bar submit the new resource profile to here
@@ -74,76 +86,67 @@ export default function Browser() {
     if (newResourceProfile === null) {
       // Cancel button
       // Just return to home page
-      console.log("Browser - handleEditSubmit: Cancel button");
-      SetCurrentID("currentResourceID", "");
-      router.push({
-        pathname: "/Home",
-        params: { needLoad: false },
-      });
+      jumpToMembers();
+      return;
+    } else if (newResourceProfile === "delete") {
+      // Delete button
+      // Delete the current resource profile
+      await Alert.alert(
+        "Delete This resource",
+        "Deleted resource can not recover! Are you sure?",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: async () => {
+              // Handle the "Yes" button press here
+              if (focusMemberID != "0") {
+                try {
+                  await deleteData(
+                    "resources",
+                    GetStorageKey(currentAccountID, focusMemberID),
+                    currentResourceID
+                  );
+
+                  alert("Member has been deleted!");
+
+                  await jumpToMembers();
+                } catch (e) {
+                  console.log(
+                    "Browser- handleDelete - deleteData - transactions - error: " +
+                      e
+                  );
+                }
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
       return;
     }
 
-    // Clicked submit button
-    // Save resource profile to local storage
-    console.log("Browser handleEditSubmit: NewResourceList: ");
-    console.log(newResourceProfile);
-
-    let value = await LoadData_local(
-      GetStorageKey(currentAccountID, focusMemberID)
-    );
-
-    if (value !== "") {
-      let tmpMemberProfile = JSON.parse(value);
-
-      let keyToUpdate = newResourceProfile.rid;
-      const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-        if (item.rid === keyToUpdate) {
-          // Update the desired key's value here
-          return {
-            ...item,
-            // rid:   //rid is not changed
-            title: newResourceProfile.title,
-            description: newResourceProfile.description,
-            default_url: newResourceProfile.default_url,
-            icon: newResourceProfile.icon,
-            memo: newResourceProfile.memo,
-            status: newResourceProfile.status,
-            url_include: newResourceProfile.url_include,
-            title_include: newResourceProfile.title_include,
-            whitelist: newResourceProfile.whitelist,
-            use_url_include: newResourceProfile.use_url_include,
-            use_title_include: newResourceProfile.use_title_include,
-            use_whitelist: newResourceProfile.use_whitelist,
-            last_url: newResourceProfile.default_url,
-            time_limit: newResourceProfile.time_limit,
-          };
-        }
-        return item;
-      });
-
-      if (currentResourceID === "0") {
-        //Add new records
-        tmpMemberProfile.resourcelist.push(newResourceProfile);
-      } else {
-        tmpMemberProfile.resourcelist = updatedData;
-      }
-      value = JSON.stringify(tmpMemberProfile);
-
-      console.log("Browser handleEditSubmit: [value] to save ");
-      console.log(value);
-
-      await SaveData_local(
+    let result = "";
+    if (currentResourceID === "0") {
+      //Add new records
+      result = await SaveNewData(
+        "resources",
         GetStorageKey(currentAccountID, focusMemberID),
-        value
+        JSON.stringify(newResourceProfile)
+      );
+    } else {
+      result = await SaveUpdateData(
+        "resources",
+        GetStorageKey(currentAccountID, focusMemberID),
+        JSON.stringify(newResourceProfile)
       );
     }
 
-    SetCurrentID("currentResourceID", "");
-
-    router.push({
-      pathname: "/Home",
-      params: { needLoad: true },
-    });
+    jumpToMembers();
+    return;
   };
 
   /**
@@ -153,10 +156,10 @@ export default function Browser() {
    *
    */
   const handleSubmit = (searchText) => {
-    setUrl(`${searchText}`);
+    setWebSourceUrl(`${searchText}`);
   };
 
-  const handleMenuClicked = (type) => {
+  const handleMenuClicked = async (type) => {
     if (type === "GoBack") {
       webViewRef.current.goBack();
     } else if (type === "GoForward") {
@@ -164,11 +167,11 @@ export default function Browser() {
     } else if (type === "Reload") {
       webViewRef.current.reload();
     } else if (type === "Exit") {
-      updateLastURL(focusMemberID, url);
+      await updateLastURL(currentUrl);
       SetCurrentID("currentResourceID", "");
-      console.log("Browser - Exit: " + currentResourceID);
+      // console.log("Browser - Exit: " + currentResourceID);
       router.push({
-        pathname: "/Home",
+        pathname: "/ResourcesList",
         params: { needLoad: false },
       });
     } else if (type === "Hide") {
@@ -181,56 +184,47 @@ export default function Browser() {
    * @param {*} myfocusMemberID
    * @param {*} newURL
    */
-  const updateLastURL = async (myfocusMemberID, newURL) => {
-    console.log("Browser - updateLastURL: " + myfocusMemberID + "  " + newURL);
-    let value = await LoadData_local(
-      GetStorageKey(currentAccountID, myfocusMemberID)
+  const updateLastURL = async (newURL) => {
+    // console.log("Browser - updateLastURL: " + focusMemberID + "  " + newURL);
+    let newResourceProfile = resourceProfile;
+    newResourceProfile.last_url = newURL;
+    // console.log(
+    //   "Browser - updateLastURL: " + JSON.stringify(newResourceProfile)
+    // );
+
+    await SaveUpdateData(
+      "resources",
+      GetStorageKey(currentAccountID, focusMemberID),
+      JSON.stringify(newResourceProfile)
     );
+  };
 
-    if (value !== "") {
-      let tmpMemberProfile = JSON.parse(value);
-
-      let keyToUpdate = currentResourceID;
-      const updatedData = tmpMemberProfile.resourcelist.map((item) => {
-        if (item.rid === keyToUpdate) {
-          // Update the desired key's value here
-          return {
-            ...item,
-            // rid:   //rid is not changed
-            last_url: newURL,
-          };
-        }
-        return item;
-      });
-
-      tmpMemberProfile.resourcelist = updatedData;
-      value = JSON.stringify(tmpMemberProfile);
-
-      console.log("Browser updateLastURL: [value] to save ");
-      console.log(value);
-
-      await SaveData_local(
-        GetStorageKey(currentAccountID, myfocusMemberID),
-        value
-      );
+  const handleUrlChange = (nativeEvent) => {
+    const { url, title } = nativeEvent;
+    // console.log("Browser - handleUrlChange url=" + url + " title=" + title);
+    // console.log("currentURL = " + currentUrl);
+    if (isEditMode) {
+      setCurrentUrl(url);
+      setCurrentWebTitle(title);
+    } else {
+      if (!checkWeb(url, title)) {
+        // setUrl(item.default_url);
+        webViewRef.current.goBack();
+      } else {
+        setCurrentUrl(url);
+        setCurrentWebTitle(title);
+      }
     }
   };
 
-  const handleUrlChange = (newNavState) => {
-    const { url, title, favicon } = newNavState;
-    console.log("Browser - handleUrlChange: favicon: " + favicon);
-    if (isEditMode) {
-      setUrl(url);
-      setWebTitle(title);
-    } else {
-      if (!checkWeb(url, title)) {
-        setUrl(item.default_url);
-        webViewRef.current.goBack();
-      } else {
-        setUrl(url);
-        setWebTitle(title);
-      }
-    }
+  const handleLoadStart = (event) => {
+    const { url, title } = event.nativeEvent;
+    // console.log("Browser - handleLoadStart url=" + url + " title=" + title);
+    // console.log("currentURL = " + currentUrl);
+  };
+
+  const handleLoadEnd = (event) => {
+    const { url, title } = event.nativeEvent;
   };
 
   const clickHandler = () => {
@@ -272,100 +266,61 @@ export default function Browser() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        {isEditMode ? (
-          <View>
-            <SearchBar
-              onSubmit={handleSubmit}
-              updateURL={url}
-              onGoBack={() => handleMenuClicked("GoBack")}
-              onGoForward={() => handleMenuClicked("GoForward")}
-              onReload={() => handleMenuClicked("Reload")}
-            />
-            <BrowserEditBar
-              onEditBarSubmit={handleEditSubmit}
-              resourceList={resourceProfile}
-              updateURL={url}
-              updateTitle={webTitle}
-            />
-          </View>
-        ) : (
-          isShowViewMenu && (
-            <BrowserViewBar
-              resourceList={resourceProfile}
-              timeLeft={timeLeft}
-              onClick={handleMenuClicked}
-            />
-          )
-        )}
-        <WebView
-          ref={webViewRef}
-          style={styles.webview}
-          source={{ uri: url }}
-          onNavigationStateChange={handleUrlChange}
-          javaScriptEnabled={true}
-          userAgent={customUserAgent}
-          sharedCookiesEnabled={true}
-        />
-        {/* <StatusBar style="auto" /> */}
+    <SafeAreaProvider style={styles.container}>
+      {isEditMode ? (
+        <View>
+          <SearchBar
+            onSubmit={handleSubmit}
+            updateURL={currentUrl}
+            onGoBack={() => handleMenuClicked("GoBack")}
+            onGoForward={() => handleMenuClicked("GoForward")}
+            onReload={() => handleMenuClicked("Reload")}
+          />
+          <BrowserEditBar
+            onEditBarSubmit={handleEditSubmit}
+            resourceList={resourceProfile}
+            updateURL={currentUrl}
+            updateTitle={currentWebTitle}
+          />
+        </View>
+      ) : (
+        isShowViewMenu && (
+          <BrowserViewBar
+            resourceList={resourceProfile}
+            timeLeft={timeLeft}
+            onClick={handleMenuClicked}
+          />
+        )
+      )}
+      <WebView
+        originWhitelist={["*"]}
+        ref={webViewRef}
+        style={styles.webview}
+        source={{ uri: webSourceUrl }}
+        onNavigationStateChange={handleUrlChange}
+        javaScriptEnabled={true}
+        userAgent={customUserAgent}
+        sharedCookiesEnabled={true}
+        onLoadStart={handleLoadStart}
+        onLoadEnd={handleLoadEnd}
+      />
+      {/* <StatusBar style="auto" /> */}
 
-        {!isEditMode && (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={clickHandler}
-            style={styles.touchableOpacityStyle}
-          >
-            {/* <Image
-          //We are making FAB using TouchableOpacity with an image
-          //We are using online image here
-          source={{
-            uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
-          }}
-          //You can use you project image Example below
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
-        />
-         */}
-            <MaterialCommunityIcons
-              name="arrow-top-left-bold-box"
-              size={50}
-              color="orange"
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+      {!isEditMode && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={clickHandler}
+          style={styles.touchableOpacityStyle}
+        >
+          <MaterialCommunityIcons
+            name="arrow-top-left-bold-box"
+            size={50}
+            color="orange"
+          />
+        </TouchableOpacity>
+      )}
     </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingTop: 40,
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-  },
-  webview: {
-    flex: 1,
-  },
-  touchableOpacityStyle: {
-    position: "absolute",
-    width: 50,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    // left: 10,
-    // top: 90,
-    right: 30,
-    bottom: 10,
-  },
-  floatingButtonStyle: {
-    resizeMode: "contain",
-    width: 50,
-    height: 50,
-    backgroundColor: "black",
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

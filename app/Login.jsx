@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import {
@@ -9,12 +9,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import {
-  GetAccountID,
-  SetCurrentID,
-  resetTotalTimeSpend,
-} from "./utility/Common";
-
+import { SetCurrentID, resetTotalTimeSpend } from "./utility/Common";
+import { LoadAccountData } from "./utility/Store";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
 export default function Login() {
@@ -23,14 +20,23 @@ export default function Login() {
 
   const handleLogin = async () => {
     // Simulating a login check (you should replace this with your actual authentication logic)
-    let resultID = await GetAccountID(userName, password);
+    let result = await LoadAccountData(userName, password);
+    // console.log(`Login - handleLogin : ${result}`);
 
-    if (resultID != "") {
-      SetCurrentID("currentAccountID", resultID);
+    if (result != "{}") {
+      let dict_result = JSON.parse(result);
+      // console.log(
+      //   `Login - handleLogin - dict_result.owner : ${dict_result.owner}`
+      // );
+
+      SetCurrentID("currentAccountID", dict_result.owner);
+      SetCurrentID("currentNickName", dict_result.nickname);
+      SetCurrentID("currentPin", dict_result.pin);
+
       resetTotalTimeSpend();
       router.push({
-        pathname: "/UserProfile",
-        params: { needLoad: true },
+        pathname: "/MembersList",
+        params: { account_profile: result },
       });
     } else {
       alert("Invalid credentials. Please try again.");
@@ -42,44 +48,69 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <Text>User Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={userName}
-            onChangeText={setuserName}
-            autoCapitalize="none"
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Password</Text>
-          <TextInput
-            style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
+    <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={[styles.rowView, { marginTop: 100 }]}>
+        <MaterialIcons
+          style={styles.icon}
+          name="face"
+          size={48}
+          color="lightblue"
+        />
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="face-woman"
+          size={48}
+          color="pink"
+        />
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleLogin()}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="baby-face-outline"
+          size={48}
+          color="lightblue"
+        />
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="face-agent"
+          size={48}
+          color="pink"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>User Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={userName}
+          onChangeText={setuserName}
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignUp()}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleLogin()}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignUp()}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );

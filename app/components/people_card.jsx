@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { styleSheetCustom } from "../utility/styles";
 
 export default function PeopleCard({
   item,
@@ -8,10 +9,10 @@ export default function PeopleCard({
   const strIcon = item.icon.toString();
   let isDefaultIcon = item.key === "0" ? true : false;
 
-  console.log("People card here" + JSON.stringify(item));
+  // console.log("People card here" + JSON.stringify(item));
 
   const handleClick = () => {
-    console.log("People card Clicked: " + JSON.stringify(item));
+    // console.log("People card Clicked: " + JSON.stringify(item));
     onSubmitResource(item);
   };
 
@@ -26,46 +27,12 @@ export default function PeopleCard({
         onPress={handleClick}
         onLongPress={handleLongClick}
       >
-        {/* {isDefaultIcon ? (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        ) : (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        )} */}
         <Image source={{ uri: item.icon }} style={styles.image} />
-        <Text style={styles.text}>{item.title}</Text>
-        <Text style={{ color: "blue" }}>{item.description}</Text>
+        <Text style={styles.text_title}>{item.title}</Text>
+        <Text style={styles.text_description}>{item.description}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  card: {
-    backgroundColor: "white",
-    padding: 5,
-    borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    margin: 20,
-  },
-  button: {
-    alignItems: "center",
-    padding: 3,
-    margin: 3,
-  },
-  image: {
-    width: 128,
-    height: 128,
-    resizeMode: "stretch",
-  },
-  text: {
-    fontWeight: "bold",
-    marginTop: 8,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

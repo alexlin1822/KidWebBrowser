@@ -1,8 +1,15 @@
 {
   "expo": {
     "scheme": "acme",
+    "icon": "./app/assets/icon.png",
+    "splash": {
+      "image": "./app/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./app/assets/favicon.png"
     },
     "plugins": [
       "expo-router"
@@ -18,7 +25,15 @@
       }
     },
     "android": {
-      "package": "com.alexlam1822.KidWebBrowser"
-    }
+      "package": "com.alexlam1822.KidWebBrowser",
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alexlam1822.KidWebBrowser"
+     }
   }
 }

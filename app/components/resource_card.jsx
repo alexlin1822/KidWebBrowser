@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getIcon } from "../utility/Common";
+import { styleSheetCustom } from "../utility/styles";
 
 export default function ResourceCard({
   item,
@@ -25,48 +27,15 @@ export default function ResourceCard({
         onLongPress={handleLongClick}
       >
         {isDefaultIcon ? (
-          <MaterialCommunityIcons name="web-plus" size={48} color="green" />
+          <MaterialCommunityIcons name="web-plus" size={96} color="green" />
         ) : (
-          <Image source={{ uri: item.icon }} style={styles.image} />
+          <Image source={{ uri: getIcon(item.icon) }} style={styles.image} />
         )}
-        {/* {strIcon.startsWith("http") ? (
-          <Image source={{ uri: item.icon }} style={styles.image} />
-        ) : (
-          <Image source={strIcon} style={styles.image} />
-        )} */}
-        <Text style={styles.text}>{item.title}</Text>
-        {/* <Text>{item.default_url}</Text>
-        <Text>{item.description}</Text> */}
+        <Text style={styles.text_title}>{item.title}</Text>
+        <Text style={styles.text_description}>{item.description}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  card: {
-    backgroundColor: "white",
-    padding: 5,
-    borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    margin: 20,
-  },
-  button: {
-    alignItems: "center",
-  },
-  image: {
-    width: 48,
-    height: 48,
-  },
-  text: {
-    fontWeight: "bold",
-    marginTop: 8,
-  },
-});
+const styles = StyleSheet.create(styleSheetCustom);

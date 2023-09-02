@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 export default function TimesUp() {
-  console.log("TimesUp - time is up");
+  // console.log("TimesUp - time is up");
   const handleReturn = async () => {
     router.replace("/Login");
     return;

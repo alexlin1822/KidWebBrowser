@@ -9,18 +9,10 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
-import {
-  CheckUsernameisExist,
-  GenerateNewId,
-  GetStorageKey,
-  LoadData_local,
-  SaveData_local,
-} from "./utility/Common";
+import { GenerateNewId, GetStorageKey } from "./utility/Common";
+import { CheckAccountExist, SaveNewData } from "./utility/Store";
 
-import {
-  InitNewAccountList_local,
-  AddNewAccount,
-} from "./utility/DataStructure";
+import { InitAccountProfile, AddNewAccount } from "./utility/DataStructure";
 
 import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
@@ -29,6 +21,7 @@ export default function Signup() {
   const [text_username, setUserName] = useState("");
   const [text_email, setEmail] = useState("");
   const [text_password, setPassword] = useState("");
+  const [text_pin, setPin] = useState("");
 
   /**
    * @description This function is called when the user submits the Sign Up form
@@ -44,126 +37,126 @@ export default function Signup() {
       text_nickname === "" ||
       text_username === "" ||
       text_email === "" ||
-      text_password === ""
+      text_password === "" ||
+      text_pin === ""
     ) {
       alert("Please fill in all the fields");
       return;
     }
 
-    // // Check if the user has entered a valid email address
-    // if (!text_email.includes("@")) {
-    //   alert("Please enter a valid email address");
-    //   return;
-    // }
+    // Check if the user has entered a valid email address
+    if (!text_email.includes("@")) {
+      alert("Please enter a valid email address");
+      return;
+    }
 
-    // // Check if the user has entered a valid password
-    // if (text_password.length < 6) {
-    //   alert("Password must be at least 6 characters long");
-    //   return;
-    // }
+    // Check if the user has entered a valid password
+    if (text_password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
 
     // For Testing clear the account list
     // await SaveData_local(GetStorageKey(), "");
 
     // Check if the user has entered a valid username and email address
-    let checkValue = await CheckUsernameisExist(text_username, text_email);
 
-    if (checkValue == 0) {
+    let checkValue = await CheckAccountExist(text_username, text_email);
+    //TODO: need test
+    if (checkValue === "") {
       //add new account
-      let value = await LoadData_local(GetStorageKey());
+      let newID = GenerateNewId("account");
+      let myAccount = AddNewAccount(
+        newID,
+        text_nickname,
+        text_username,
+        text_email,
+        text_password,
+        text_pin
+      );
 
-      if (value != "" && value != null) {
-        let myAccount = AddNewAccount(
-          GenerateNewId("account"),
-          text_nickname,
-          text_username,
-          text_email,
-          text_password
-        );
-        let blocks = JSON.parse(value);
-        blocks.push(myAccount);
-        value = JSON.stringify(blocks);
-      } else {
-        value = InitNewAccountList_local(
-          GenerateNewId("account"),
-          text_nickname,
-          text_username,
-          text_email,
-          text_password
-        );
-      }
+      //Save new account to accounts
+      SaveNewData("accounts", GetStorageKey(), JSON.stringify(myAccount));
 
-      //Save the account list to local storage
-      SaveData_local(GetStorageKey(), value);
+      //Save new account profile to members
+      let myAccountProfile = InitAccountProfile(newID);
 
+      SaveNewData("account_profile", GetStorageKey(newID), myAccountProfile);
+      // console.log(
+      //   `SaveNewData - members : ${GetStorageKey(newID)} : ${myAccountProfile}`
+      // );
       alert("Account created successfully");
 
       //navigate to login page
       router.replace("/Login");
-    } else if (checkValue == 1) {
-      alert("Username already exists");
-      return;
-    } else if (checkValue == 2) {
-      alert("Email address already exists");
-      return;
+    } else {
+      alert(checkValue + " already exists");
     }
+    return;
   };
 
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <View style={styles.rowView}>
-          <Text>Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_nickname}
-            onChangeText={setNickName}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>User Name</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_username}
-            onChangeText={setUserName}
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Email</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-        </View>
-        <View style={styles.rowView}>
-          <Text>Password</Text>
-          <TextInput
-            style={styles.textInput}
-            value={text_password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-        </View>
+    <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_nickname}
+          onChangeText={setNickName}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>User Name</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_username}
+          onChangeText={setUserName}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Email</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_password}
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.formText}>Pin key</Text>
+        <TextInput
+          style={styles.textInput}
+          value={text_pin}
+          onChangeText={setPin}
+          secureTextEntry={true}
+        />
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignup("Sign Up")}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignup("Sign Up")}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.rowView}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={() => handleSignup("Cancel")}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleSignup("Cancel")}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaProvider>
   );

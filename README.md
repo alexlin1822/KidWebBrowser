@@ -1,10 +1,26 @@
-# Kid Web Browser for Android Pad and iPad 😄
+# Kid Web Browser V 1.0.0 (Open-source Verison) for Android Pad and iPad 😄
 
 Platform: Android & IOS
 
 Languages: JavaScript
 
 Framework: Expo Router & React Native
+
+## License
+
+Copyright (C) 2023 Alex Lin <alexlin1822@hotmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ## Main Features:
 
@@ -24,7 +40,7 @@ Framework: Expo Router & React Native
 - Login page
 - Member list page\
   List all member in family
-- User home page\
+- Resource list page\
   list the preset resources, each resource show at a card view with title detail and entry button and a custom button to add resources to this user. Share button to share the resources to others users.
 - Web browser page (browser view and edit view)\
   Browser view just allow whitelist resource and show meno. If not allow page. it will go back to default page.
@@ -45,6 +61,8 @@ Framework: Expo Router & React Native
     username: text_username,
     email: text_email,
     password: text_password,
+    pin: text_pin,
+    status: "0",
   };
 
 #### Account profile object ####
@@ -59,7 +77,7 @@ Framework: Expo Router & React Native
       {
         key: "0",
         title: "Add Person",
-        description: "Add your kid or family member",
+        description: "Add family member",
         icon: "https://alexlin1822.github.io/aimage/0.png",
         memo: "",
         status: "0",
