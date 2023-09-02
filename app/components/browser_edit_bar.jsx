@@ -95,7 +95,7 @@ export default function BrowserEditBar({
       title: webTitle,
       description: description,
       default_url: defaultUrl,
-      icon: defaultUrl,
+      icon: iconUrl,
       memo: memo,
       status: resourceStatus,
       url_include: urlInclude,
