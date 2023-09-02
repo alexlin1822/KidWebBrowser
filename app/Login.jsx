@@ -11,6 +11,7 @@ import {
 
 import { SetCurrentID, resetTotalTimeSpend } from "./utility/Common";
 import { LoadAccountData } from "./utility/Store";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { styleSheetCustom } from "./utility/styles"; // <--- import the custom style sheet
 
 export default function Login() {
@@ -48,6 +49,33 @@ export default function Login() {
 
   return (
     <SafeAreaProvider style={[styles.container, styles.container_center]}>
+      <View style={[styles.rowView, { marginTop: 100 }]}>
+        <MaterialIcons
+          style={styles.icon}
+          name="face"
+          size={48}
+          color="lightblue"
+        />
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="face-woman"
+          size={48}
+          color="pink"
+        />
+
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="baby-face-outline"
+          size={48}
+          color="lightblue"
+        />
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="face-agent"
+          size={48}
+          color="pink"
+        />
+      </View>
       <View style={styles.rowView}>
         <Text style={styles.formText}>User Name</Text>
         <TextInput
