@@ -43,7 +43,7 @@ export function AddNewAccount(
 export function InitAccountProfile(accountID) {
   //db:kwb
   //collection: members
-  console.log("InitAccountProfile");
+  // console.log("InitAccountProfile");
   const myAccountProfile = {
     owner: accountID,
     profile: {
@@ -73,7 +73,7 @@ export function InitAccountProfile(accountID) {
 export function InitResourceProfile(memberID) {
   //db:kwb
   //collection: resources
-  console.log("InitResourceProfile");
+  // console.log("InitResourceProfile");
   const myResourceProfile = {
     owner: memberID,
     resourcelist: [

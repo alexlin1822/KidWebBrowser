@@ -56,7 +56,7 @@ export default function ResourcesList() {
 
   const handleSubmit = (result, whoCall) => {
     setModalVisible(false);
-    console.log("Resources - handleSubmit: " + result);
+    // console.log("Resources - handleSubmit: " + result);
     if (result) {
       if (whoCall === "resources") {
         router.push({

@@ -30,7 +30,7 @@ export default function UserEdit() {
   const params = useLocalSearchParams();
   const { passItem } = params;
 
-  console.log("UserEdit item: " + passItem);
+  // console.log("UserEdit item: " + passItem);
   let item = JSON.parse(passItem);
 
   const currentAccountID = GetCurrentID("currentAccountID");
@@ -107,13 +107,13 @@ export default function UserEdit() {
             // Handle the "Yes" button press here
             if (focusMemberID != "0") {
               try {
-                console.log("UserEdit - handleDelete - deleteData - start1");
+                // console.log("UserEdit - handleDelete - deleteData - start1");
                 await deleteData(
                   "members",
                   GetStorageKey(currentAccountID),
                   focusMemberID
                 );
-                console.log("UserEdit - handleDelete - deleteData - start2");
+                // console.log("UserEdit - handleDelete - deleteData - start2");
                 await deleteData(
                   "member_profile",
                   GetStorageKey(currentAccountID, focusMemberID),
@@ -141,7 +141,7 @@ export default function UserEdit() {
   };
 
   const handImageChange = (which) => {
-    console.log("UserEdit - handleSubmit " + which);
+    // console.log("UserEdit - handleSubmit " + which);
     const parts = icon.split("/");
     const oldPngName = parts[parts.length - 1];
     let imageNumber = parseInt(oldPngName.split(".")[0]);
@@ -152,14 +152,14 @@ export default function UserEdit() {
       } else {
         imageNumber--;
       }
-      console.log("UserEdit - handleSubmit Left");
+      // console.log("UserEdit - handleSubmit Left");
     } else if (which === "Right") {
       if (imageNumber >= 10) {
         imageNumber = 1;
       } else {
         imageNumber++;
       }
-      console.log("UserEdit - handleSubmit Right");
+      // console.log("UserEdit - handleSubmit Right");
     }
 
     let newPngName = imageNumber.toString() + ".png";

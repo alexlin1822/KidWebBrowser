@@ -24,9 +24,9 @@ export default function Login() {
 
     if (result != "{}") {
       let dict_result = JSON.parse(result);
-      console.log(
-        `Login - handleLogin - dict_result.owner : ${dict_result.owner}`
-      );
+      // console.log(
+      //   `Login - handleLogin - dict_result.owner : ${dict_result.owner}`
+      // );
 
       SetCurrentID("currentAccountID", dict_result.owner);
       SetCurrentID("currentNickName", dict_result.nickname);

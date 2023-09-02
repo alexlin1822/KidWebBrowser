@@ -51,25 +51,25 @@ export function getIsRemote() {
  */
 export function GetCurrentID(keyname) {
   if (keyname === "currentAccountID") {
-    console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
+    // console.log("Common - GetInfo: currentAccountID: " + currentAccountID);
     return currentAccountID;
   } else if (keyname === "focusMemberID") {
-    console.log("Common - GetInfo: focusMemberID: " + focusMemberID);
+    // console.log("Common - GetInfo: focusMemberID: " + focusMemberID);
     return focusMemberID;
   } else if (keyname === "currentResourceID") {
-    console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
+    // console.log("Common - GetInfo: currentResourceID: " + currentResourceID);
     return currentResourceID;
   } else if (keyname === "currentNickName") {
-    console.log("Common - GetInfo: currentNickName: " + currentNickName);
+    // console.log("Common - GetInfo: currentNickName: " + currentNickName);
     return currentNickName;
   } else if (keyname === "currentPin") {
-    console.log("Common - GetInfo: currentPin: " + currentPin);
+    // console.log("Common - GetInfo: currentPin: " + currentPin);
     return currentPin;
   } else if (keyname === "currentMemberName") {
-    console.log("Common - GetInfo: currentMemberName: " + currentMemberName);
+    // console.log("Common - GetInfo: currentMemberName: " + currentMemberName);
     return currentMemberName;
   } else {
-    console.log("Common - GetInfo: " + keyname + " return empty string");
+    // console.log("Common - GetInfo: " + keyname + " return empty string");
     return "";
   }
 }
@@ -80,7 +80,7 @@ export function GetCurrentID(keyname) {
  * @returns : Boolean
  * */
 export function SetCurrentID(keyname, content) {
-  console.log("Common - SetInfo: " + keyname + " " + content);
+  // console.log("Common - SetInfo: " + keyname + " " + content);
   if (keyname === "currentAccountID") {
     currentAccountID = content;
   } else if (keyname === "focusMemberID") {
@@ -120,7 +120,7 @@ export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
     result = appName + "." + accountID + "-" + memberID + "-" + resourceID; // Not used
   }
 
-  console.log(`Common - GetStorageKey : ${result}`);
+  // console.log(`Common - GetStorageKey : ${result}`);
   return result;
 }
 
@@ -141,7 +141,7 @@ export function GenerateNewId(idType) {
     result = "r-" + UUID;
   }
 
-  console.log(`Common - GenerateNewId : ${result}`);
+  // console.log(`Common - GenerateNewId : ${result}`);
   return result;
 }
 
@@ -154,7 +154,7 @@ export function GenerateNewId(idType) {
  */
 export function getIcon(url) {
   let icon = "https://www.google.com/s2/favicons?domain=" + url + "&sz=48";
-  console.log("browser_edit_bar  getIcon - icon : ", icon);
+  // console.log("browser_edit_bar  getIcon - icon : ", icon);
   return icon;
 }
 

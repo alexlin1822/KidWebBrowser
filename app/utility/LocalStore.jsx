@@ -68,12 +68,12 @@ export async function SaveNewData_local(type, storage_keyname, content) {
  * @returns  true or false
  */
 export async function SaveUpdateData_local(type, storage_keyname, content) {
-  console.log(
-    `Common - SaveUpdateData_local : ` +
-      storage_keyname +
-      "  Content: " +
-      content
-  );
+  // console.log(
+  //   `Common - SaveUpdateData_local : ` +
+  //     storage_keyname +
+  //     "  Content: " +
+  //     content
+  // );
 
   let dict_update_content = JSON.parse(content);
   let str_content = "";
@@ -101,8 +101,6 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
         return item;
       });
       blocks = updatedData;
-      //TODO: just for test, need delete
-      console.log("SaveUpdateData_local_account", blocks);
     } else if (type === "account_profile") {
       const updatedData = () => {
         //console.log("SaveUpdateData_local_account_profile", item);
@@ -137,7 +135,7 @@ export async function SaveUpdateData_local(type, storage_keyname, content) {
     } else if (type === "resources") {
       const updatedData = dict_db_data.resourcelist.map((item) => {
         if (item.rid === dict_update_content.rid) {
-          console.log("SaveUpdateData_local_resources : ", item);
+          // console.log("SaveUpdateData_local_resources : ", item);
           // Update the desired key's value here
           return {
             ...item,
@@ -361,15 +359,10 @@ export async function CheckAccountUnique_local(
 ) {
   let str_accountList = await LoadData_local("account_list", GetStorageKey());
   let dict_db_data = JSON.parse(str_accountList);
-  console.log("CheckAccountUnique_local");
-  console.log(str_accountList);
 
   const dict_username = dict_db_data.filter(
     (item) => item.username === Username
   );
-  console.log("CheckAccountUnique_local dict_username");
-  console.log(Username);
-  console.log(dict_username);
 
   if (dict_username.length > 0) {
     if (dict_username[0].accountID !== currentAccountID) {
@@ -378,9 +371,6 @@ export async function CheckAccountUnique_local(
   }
 
   const dict_email = dict_db_data.filter((item) => item.email === Email);
-  console.log("CheckAccountUnique_local dict_email");
-  console.log(Email);
-  console.log(dict_email);
   if (dict_email.length > 0) {
     if (dict_email[0].accountID !== currentAccountID) {
       return "Email is not available!!";

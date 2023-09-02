@@ -75,7 +75,7 @@ export default function Setting() {
       email
     );
 
-    console.log("Setting - handleSubmit - checkResult: " + checkResult);
+    // console.log("Setting - handleSubmit - checkResult: " + checkResult);
     if (checkResult === "") {
       let newAccount = {
         accountID: accountID,
@@ -118,7 +118,7 @@ export default function Setting() {
             // Handle the "Yes" button press here
             if (currentAccountID != "") {
               try {
-                console.log("Setting - handleDelete - deleteData - start1");
+                // console.log("Setting - handleDelete - deleteData - start1");
                 await deleteData("accounts", GetStorageKey(), currentAccountID);
                 await deleteData(
                   "account_profile",
@@ -162,8 +162,8 @@ export default function Setting() {
         const dict_account = dict_db_data.filter(
           (item) => item.accountID == currentAccountID
         );
-        console.log("Setting - dict_account: ");
-        console.log(dict_account);
+        // console.log("Setting - dict_account: ");
+        // console.log(dict_account);
 
         setAccountID(dict_account[0].accountID);
         setNickName(dict_account[0].nickname);

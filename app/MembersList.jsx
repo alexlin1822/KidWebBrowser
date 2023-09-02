@@ -39,7 +39,7 @@ export default function MembersList() {
 
   // PeopleCard click event
   const clickPeopleCard = (item, isLongPress) => {
-    console.log("MembersList - clickPeopleCard: ");
+    // console.log("MembersList - clickPeopleCard: ");
 
     SetCurrentID("focusMemberID", item.key);
     SetCurrentID("currentMemberName", item.title);
@@ -70,7 +70,7 @@ export default function MembersList() {
 
   const handleSubmit = (result, whoCall) => {
     setModalVisible(false);
-    console.log("MembersList - handleSubmit: " + result);
+    // console.log("MembersList - handleSubmit: " + result);
     if (result) {
       if (whoCall === "Setting") {
         router.replace("/Setting");

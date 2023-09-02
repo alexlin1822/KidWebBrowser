@@ -128,7 +128,7 @@ export default function BrowserEditBar({
   };
 
   const handleSetIcon = () => {
-    setIconUrl(defaultUrl);
+    setIconUrl(updateURL);
   };
 
   return (

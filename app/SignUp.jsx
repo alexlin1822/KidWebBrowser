@@ -82,9 +82,9 @@ export default function Signup() {
       let myAccountProfile = InitAccountProfile(newID);
 
       SaveNewData("account_profile", GetStorageKey(newID), myAccountProfile);
-      console.log(
-        `SaveNewData - members : ${GetStorageKey(newID)} : ${myAccountProfile}`
-      );
+      // console.log(
+      //   `SaveNewData - members : ${GetStorageKey(newID)} : ${myAccountProfile}`
+      // );
       alert("Account created successfully");
 
       //navigate to login page

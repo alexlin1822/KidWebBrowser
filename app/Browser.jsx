@@ -185,12 +185,12 @@ export default function Browser() {
    * @param {*} newURL
    */
   const updateLastURL = async (newURL) => {
-    console.log("Browser - updateLastURL: " + focusMemberID + "  " + newURL);
+    // console.log("Browser - updateLastURL: " + focusMemberID + "  " + newURL);
     let newResourceProfile = resourceProfile;
     newResourceProfile.last_url = newURL;
-    console.log(
-      "Browser - updateLastURL: " + JSON.stringify(newResourceProfile)
-    );
+    // console.log(
+    //   "Browser - updateLastURL: " + JSON.stringify(newResourceProfile)
+    // );
 
     await SaveUpdateData(
       "resources",
@@ -201,8 +201,8 @@ export default function Browser() {
 
   const handleUrlChange = (nativeEvent) => {
     const { url, title } = nativeEvent;
-    console.log("Browser - handleUrlChange url=" + url + " title=" + title);
-    console.log("currentURL = " + currentUrl);
+    // console.log("Browser - handleUrlChange url=" + url + " title=" + title);
+    // console.log("currentURL = " + currentUrl);
     if (isEditMode) {
       setCurrentUrl(url);
       setCurrentWebTitle(title);

@@ -17,7 +17,7 @@ export default function SearchBar({
   onGoForward,
   onReload,
 }) {
-  console.log("SearchBar updateURL: " + updateURL);
+  // console.log("SearchBar updateURL: " + updateURL);
   const [text, setText] = useState(updateURL);
   const [curURL, setCurURL] = useState(updateURL);
 
