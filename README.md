@@ -1,4 +1,4 @@
-# Kid Web Browser V1 (Open-source Verison) for Android Pad and iPad 😄
+# Kid Web Browser V 1.0.0 (Open-source Verison) for Android Pad and iPad 😄
 
 Platform: Android & IOS
 
@@ -40,7 +40,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 - Login page
 - Member list page\
   List all member in family
-- User home page\
+- Resource list page\
   list the preset resources, each resource show at a card view with title detail and entry button and a custom button to add resources to this user. Share button to share the resources to others users.
 - Web browser page (browser view and edit view)\
   Browser view just allow whitelist resource and show meno. If not allow page. it will go back to default page.
@@ -61,6 +61,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     username: text_username,
     email: text_email,
     password: text_password,
+    pin: text_pin,
+    status: "0",
   };
 
 #### Account profile object ####
@@ -75,7 +77,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
       {
         key: "0",
         title: "Add Person",
-        description: "Add your kid or family member",
+        description: "Add family member",
         icon: "https://alexlin1822.github.io/aimage/0.png",
         memo: "",
         status: "0",
