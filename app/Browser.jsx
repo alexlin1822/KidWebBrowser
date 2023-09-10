@@ -159,6 +159,7 @@ export default function Browser() {
     setWebSourceUrl(`${searchText}`);
   };
 
+  // const handleMenuClicked = async (type) => {
   const handleMenuClicked = async (type) => {
     if (type === "GoBack") {
       webViewRef.current.goBack();
@@ -177,8 +178,13 @@ export default function Browser() {
     } else if (type === "Hide") {
       setIsShowViewMenu(false);
     } else if (type === "Home") {
+      // await setCurrentUrl(item.default_url);
+      // await setWebSourceUrl(item.default_url);
       setWebSourceUrl(item.default_url);
       console.log("Browser - Home: " + item.default_url);
+      // webViewRef.current.reload();
+      // webViewRef.current.source = { url: item.default_url };
+      // webViewRef.current.reload();
     }
   };
 
@@ -210,12 +216,13 @@ export default function Browser() {
       setCurrentUrl(url);
       setCurrentWebTitle(title);
     } else {
-      if (!checkWeb(url, title)) {
-        // setUrl(item.default_url);
-        webViewRef.current.goBack();
-      } else {
+      if (checkWeb(url, title)) {
+        console.log("Browser - handleUrlChange - checkWeb - true " + url);
         setCurrentUrl(url);
         setCurrentWebTitle(title);
+      } else {
+        console.log("Browser - handleUrlChange - checkWeb - false " + url);
+        webViewRef.current.goBack();
       }
     }
   };
@@ -234,15 +241,16 @@ export default function Browser() {
     setIsShowViewMenu(!isShowViewMenu);
   };
 
-  const checkWeb = (currentUrl, currentTitle) => {
-    if (currentUrl === item.default_url) {
+  const checkWeb = (local_currentUrl, local_currentTitle) => {
+    // console.log("Browser - checkWeb: " + currentUrl + "  " + item.default_url);
+    if (local_currentUrl === item.default_url) {
       return true;
     }
 
     if (item.use_url_include) {
       //check url
       for (let i = 0; i < urlList.length; i++) {
-        if (currentUrl.includes(urlList[i])) {
+        if (local_currentUrl.includes(urlList[i])) {
           return true;
         }
       }
@@ -251,7 +259,7 @@ export default function Browser() {
     if (item.use_title_include) {
       //check title
       for (let i = 0; i < titleList.length; i++) {
-        if (currentTitle.includes(titleList[i])) {
+        if (local_currentTitle.includes(titleList[i])) {
           return true;
         }
       }
@@ -260,7 +268,7 @@ export default function Browser() {
     if (item.use_whitelist) {
       //check whitelist
       for (let i = 0; i < whitelistList.length; i++) {
-        if (currentUrl.includes(whitelistList[i])) {
+        if (local_currentUrl.includes(whitelistList[i])) {
           return true;
         }
       }

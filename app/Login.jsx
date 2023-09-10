@@ -48,69 +48,71 @@ export default function Login() {
   };
 
   return (
-    <SafeAreaProvider style={[styles.container, styles.container_center]}>
-      <View style={[styles.rowView, { marginTop: 100 }]}>
-        <MaterialIcons
-          style={styles.icon}
-          name="face"
-          size={48}
-          color="lightblue"
-        />
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="face-woman"
-          size={48}
-          color="pink"
-        />
+    <SafeAreaProvider style={styles.colView}>
+      <View style={styles.colView}>
+        <View style={[styles.rowView, { marginTop: 100 }]}>
+          <MaterialIcons
+            style={styles.icon}
+            name="face"
+            size={48}
+            color="lightblue"
+          />
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="face-woman"
+            size={48}
+            color="pink"
+          />
 
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="baby-face-outline"
-          size={48}
-          color="lightblue"
-        />
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="face-agent"
-          size={48}
-          color="pink"
-        />
-      </View>
-      <View style={styles.rowView}>
-        <Text style={styles.formText}>User Name</Text>
-        <TextInput
-          style={styles.textInput}
-          value={userName}
-          onChangeText={setuserName}
-          autoCapitalize="none"
-        />
-      </View>
-      <View style={styles.rowView}>
-        <Text style={styles.formText}>Password</Text>
-        <TextInput
-          style={styles.textInput}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
-      </View>
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="baby-face-outline"
+            size={48}
+            color="lightblue"
+          />
+          <MaterialCommunityIcons
+            style={styles.icon}
+            name="face-agent"
+            size={48}
+            color="pink"
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.formText}>User Name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={userName}
+            onChangeText={setuserName}
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.formText}>Password</Text>
+          <TextInput
+            style={styles.textInput}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+        </View>
 
-      <View style={styles.rowView}>
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => handleLogin()}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleLogin()}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.rowView}>
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => handleSignUp()}
-        >
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => handleSignUp()}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaProvider>
   );
