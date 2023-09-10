@@ -176,6 +176,9 @@ export default function Browser() {
       });
     } else if (type === "Hide") {
       setIsShowViewMenu(false);
+    } else if (type === "Home") {
+      setWebSourceUrl(item.default_url);
+      console.log("Browser - Home: " + item.default_url);
     }
   };
 

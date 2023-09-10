@@ -59,7 +59,12 @@ export default function BrowserViewBar({ resourceList, timeLeft, onClick }) {
       >
         <Feather name="refresh-ccw" size={24} color="black" />
       </TouchableOpacity>
-
+      <TouchableOpacity
+        style={styles.touchableOpacity}
+        onPress={() => handleClicked("Home")}
+      >
+        <Feather name="home" size={24} color="black" />
+      </TouchableOpacity>
       <Text
         style={
           (styles.text, { marginLeft: 20, fontSize: 22, fontWeight: "bold" })
