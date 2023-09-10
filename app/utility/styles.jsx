@@ -14,6 +14,11 @@ export const styleSheetCustom = {
     paddingBottom: 5,
     paddingHorizontal: 5,
   },
+  colView: {
+    flexDirection: "column",
+    alignItems: "center",
+    flex: 1,
+  },
   rowView: {
     flexDirection: "row",
     alignItems: "center",
@@ -30,7 +35,6 @@ export const styleSheetCustom = {
     alignContent: "center",
     justifyContent: "center",
   },
-
   webview: {
     flex: 1,
   },
