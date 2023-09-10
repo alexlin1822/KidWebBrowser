@@ -178,13 +178,8 @@ export default function Browser() {
     } else if (type === "Hide") {
       setIsShowViewMenu(false);
     } else if (type === "Home") {
-      // await setCurrentUrl(item.default_url);
-      // await setWebSourceUrl(item.default_url);
-      setWebSourceUrl(item.default_url);
-      console.log("Browser - Home: " + item.default_url);
-      // webViewRef.current.reload();
-      // webViewRef.current.source = { url: item.default_url };
-      // webViewRef.current.reload();
+      await setWebSourceUrl(item.default_url.toString());
+      // console.log("Browser - Home: " + item.default_url);
     }
   };
 
@@ -242,12 +237,11 @@ export default function Browser() {
   };
 
   const checkWeb = (local_currentUrl, local_currentTitle) => {
-    // console.log("Browser - checkWeb: " + currentUrl + "  " + item.default_url);
     if (local_currentUrl === item.default_url) {
       return true;
     }
 
-    if (item.use_url_include) {
+    if (item.use_url_include && item.url_include.trim() !== "") {
       //check url
       for (let i = 0; i < urlList.length; i++) {
         if (local_currentUrl.includes(urlList[i])) {
@@ -256,7 +250,7 @@ export default function Browser() {
       }
     }
 
-    if (item.use_title_include) {
+    if (item.use_title_include && item.title_include.trim() !== "") {
       //check title
       for (let i = 0; i < titleList.length; i++) {
         if (local_currentTitle.includes(titleList[i])) {
@@ -265,7 +259,7 @@ export default function Browser() {
       }
     }
 
-    if (item.use_whitelist) {
+    if (item.use_whitelist && item.whitelist.trim() !== "") {
       //check whitelist
       for (let i = 0; i < whitelistList.length; i++) {
         if (local_currentUrl.includes(whitelistList[i])) {
